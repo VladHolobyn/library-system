@@ -4,6 +4,7 @@ import com.pnudev.librarysystem.dto.CategoryDTO;
 import com.pnudev.librarysystem.entity.Category;
 import com.pnudev.librarysystem.mapper.CategoryMapper;
 import com.pnudev.librarysystem.repository.CategoryRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,4 +25,13 @@ public class CategoryService {
         return mapper.toDTO(repository.save(mapper.toEntity(categoryDTO)));
     }
 
+    public CategoryDTO updateCategory(CategoryDTO categoryDTO) {
+        Long id = categoryDTO.getId();
+        Category updated = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Category with id:%d not found", id)));
+
+        mapper.updateCategoryFromDTO(categoryDTO, updated);
+
+        return mapper.toDTO(repository.save(updated));
+    }
 }
