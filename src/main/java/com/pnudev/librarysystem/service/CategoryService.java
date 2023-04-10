@@ -20,4 +20,8 @@ public class CategoryService {
         return page.map(mapper::toDTO);
     }
 
+    public CategoryDTO addCategory(CategoryDTO categoryDTO){
+        return mapper.toDTO(repository.save(mapper.toEntity(categoryDTO)));
+    }
+
 }
