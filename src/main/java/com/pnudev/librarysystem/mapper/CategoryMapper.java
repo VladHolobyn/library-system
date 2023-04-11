@@ -10,7 +10,7 @@ public interface CategoryMapper {
 
     Category toEntity(CategoryDTO categoryDTO);
 
-    CategoryDTO toDTO(Category customer);
+    CategoryDTO toDTO(Category category);
 
     void updateCategoryFromDTO(CategoryDTO categoryDTO, @MappingTarget Category category);
 
