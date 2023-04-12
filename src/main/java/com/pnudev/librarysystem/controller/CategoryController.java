@@ -30,13 +30,13 @@ public class CategoryController {
     @GetMapping
     public Page<CategoryDTO> searchCategoryByName(
             @RequestParam("name") String name,
-            @RequestParam(value = "page",required = false) Integer pageNumber,
-            @RequestParam(value = "size", required = false) Integer size
+            @RequestParam("page") Optional<Integer> pageNumber,
+            @RequestParam("size") Optional<Integer> size
     ){
         return service.searchCategoryByName(
                 name,
-                Optional.ofNullable(pageNumber).filter(p -> p > 0).orElse(0),
-                Optional.ofNullable(size).filter(s -> s > 0).orElse(5)
+                pageNumber.filter(p -> p > 0).orElse(0),
+                size.filter(s -> s > 0).orElse(5)
         );
     }
 

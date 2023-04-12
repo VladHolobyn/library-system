@@ -29,7 +29,7 @@ public class CategoryService {
     public CategoryDTO updateCategory(CategoryDTO categoryDTO) {
         Long id = categoryDTO.getId();
         Category updated = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Category with id:%d not found", id)));
+                .orElseThrow(() -> new EntityNotFoundException("Category with id:%d not found".formatted(id)));
 
         mapper.updateCategoryFromDTO(categoryDTO, updated);
 
@@ -38,11 +38,10 @@ public class CategoryService {
 
     public void deleteCategory(Long id) {
         Category category = repository.findById(id)
-                .orElseThrow(()-> new EntityNotFoundException(String.format("Category with id: %d not found", id)));
-        int usage = category.getBooks().size();
+                .orElseThrow(()-> new EntityNotFoundException("Category with id: %d not found".formatted(id)));
 
-        if(usage > 0){
-            throw new DeleteFailedException(String.format("Category with id: %d is used: %d", id, usage));
+        if(!category.getBooks().isEmpty()){
+            throw new DeleteFailedException("Category with id: %d is used".formatted(id));
         }
 
         repository.deleteById(id);
