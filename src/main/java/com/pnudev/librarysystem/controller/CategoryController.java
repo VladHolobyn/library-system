@@ -24,7 +24,7 @@ import java.util.Optional;
 @RequestMapping("/categories")
 public class CategoryController {
 
-    private final CategoryService service;
+    private final CategoryService categoryService;
 
 
     @GetMapping
@@ -33,7 +33,7 @@ public class CategoryController {
             @RequestParam("page") Optional<Integer> pageNumber,
             @RequestParam("size") Optional<Integer> size
     ){
-        return service.searchCategoryByName(
+        return categoryService.searchCategoryByName(
                 name,
                 pageNumber.filter(p -> p > 0).orElse(0),
                 size.filter(s -> s > 0).orElse(5)
@@ -43,18 +43,18 @@ public class CategoryController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CategoryDTO addCategory(@Valid @RequestBody CategoryDTO categoryDTO){
-        return service.addCategory(categoryDTO);
+        return categoryService.addCategory(categoryDTO);
     }
 
     @PutMapping
     public CategoryDTO updateCategory(@Valid @RequestBody CategoryDTO categoryDTO){
-        return service.updateCategory(categoryDTO);
+        return categoryService.updateCategory(categoryDTO);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable Long id){
-        service.deleteCategory(id);
+        categoryService.deleteCategory(id);
     }
 
 }
