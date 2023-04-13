@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -23,6 +24,11 @@ public class AuthorController {
     @ResponseStatus(HttpStatus.CREATED)
     public AuthorDTO addAuthor(@Valid @RequestBody AuthorDTO authorDTO){
         return authorService.addAuthor(authorDTO);
+    }
+
+    @PutMapping("/{id}")
+    public AuthorDTO updateAuthor(@PathVariable Long id, @Valid @RequestBody AuthorDTO authorDTO){
+        return authorService.updateAuthor(id, authorDTO);
     }
 
     @DeleteMapping("/{id}")

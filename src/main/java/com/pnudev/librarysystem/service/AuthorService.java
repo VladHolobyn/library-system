@@ -31,4 +31,13 @@ public class AuthorService {
 
         authorRepository.deleteById(id);
     }
+
+    public AuthorDTO updateAuthor(Long id, AuthorDTO authorDTO) {
+        Author author = authorRepository.findById(id)
+                .orElseThrow(()-> new EntityNotFoundException("Author with id: %d not found".formatted(id)));
+
+        authorMapper.updateAuthorFromDTO(authorDTO,author);
+
+        return authorMapper.toDTO(authorRepository.save(author));
+    }
 }
