@@ -5,16 +5,15 @@ import com.pnudev.librarysystem.entity.Author;
 import com.pnudev.librarysystem.exception.DeleteFailedException;
 import com.pnudev.librarysystem.mapper.AuthorMapper;
 import com.pnudev.librarysystem.repository.AuthorRepository;
-import com.pnudev.librarysystem.specifcation.AuthorSpecifications;
+import com.pnudev.librarysystem.util.SpecificationUtils;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -24,7 +23,9 @@ public class AuthorService {
     private final AuthorMapper authorMapper;
 
     public AuthorDTO addAuthor(AuthorDTO authorDTO) {
-        return authorMapper.toDTO(authorRepository.save(authorMapper.toEntity(authorDTO)));
+        Author author = authorMapper.toEntity(authorDTO);
+        Author savedAuthor = authorRepository.save(author);
+        return authorMapper.toDTO(savedAuthor);
     }
 
     public void deleteAuthor(Long id) {
@@ -47,22 +48,17 @@ public class AuthorService {
         return authorMapper.toDTO(authorRepository.save(author));
     }
 
-    public Page<AuthorDTO> searchAuthorByParams(
-            Optional<String> firstName,
-            Optional<String> lastName,
-            int pageNumber,
-            int pageSize
-    ) {
+    public Page<AuthorDTO> searchAuthorByParams(String firstName, String lastName, Pageable pageable) {
         Specification<Author> specification = Specification.where(null);
 
-        if (firstName.isPresent()) {
-            specification = specification.and(AuthorSpecifications.fieldContainsIgnoreCase("firstName",firstName.get()));
+        if (firstName != null && !firstName.isEmpty()) {
+            specification = specification.and(SpecificationUtils.<Author>fieldContainsIgnoreCase("firstName",firstName));
         }
-        if (lastName.isPresent()){
-            specification = specification.and(AuthorSpecifications.fieldContainsIgnoreCase("lastName",lastName.get()));
+        if (lastName != null && !lastName.isEmpty()){
+            specification = specification.and(SpecificationUtils.<Author>fieldContainsIgnoreCase("lastName",lastName));
         }
 
-        Page<Author> page = authorRepository.findAll(specification, PageRequest.of(pageNumber,pageSize));
+        Page<Author> page = authorRepository.findAll(specification, pageable);
         return page.map(authorMapper::toDTO);
     }
 
