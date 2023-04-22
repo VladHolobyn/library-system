@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -45,12 +46,12 @@ public class Book {
     private Integer quantity;
 
     @ManyToMany(mappedBy = "books")
-    private List<Author> authors;
+    private List<Author> authors = new LinkedList<>();
 
     @ManyToMany(mappedBy = "books")
-    private List<Category> categories;
+    private List<Category> categories = new LinkedList<>();
 
     @OneToMany(mappedBy = "book")
-    private List<Borrowing> borrowings;
+    private List<Borrowing> borrowings = new LinkedList<>();
 
 }
