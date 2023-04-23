@@ -3,6 +3,7 @@ package com.pnudev.librarysystem.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -11,8 +12,8 @@ public class FormBookDTO {
     @NotBlank(message = "Title must be specified")
     private String title;
 
-    @NotBlank(message = "Cover image url must be specified")
-    private String coverImageUrl;
+    @NotNull(message = "Cover image must be specified")
+    private MultipartFile coverImage;
 
     @NotBlank(message = "Description must be specified")
     private String description;

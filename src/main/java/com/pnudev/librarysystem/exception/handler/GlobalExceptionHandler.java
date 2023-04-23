@@ -36,4 +36,10 @@ public class GlobalExceptionHandler {
         return new ErrorDTO(List.of(ex.getMessage()));
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDTO handleIOException(IllegalArgumentException e) {
+        return new ErrorDTO(List.of(e.getMessage()));
+    }
+
 }

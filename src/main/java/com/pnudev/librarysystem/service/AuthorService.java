@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @AllArgsConstructor
 @Service
@@ -60,6 +62,10 @@ public class AuthorService {
 
         Page<Author> page = authorRepository.findAll(specification, pageable);
         return page.map(authorMapper::toDTO);
+    }
+
+    public List<AuthorDTO> findAllById(List<Long> ids){
+        return authorRepository.findAllById(ids).stream().map(authorMapper::toDTO).toList();
     }
 
 }

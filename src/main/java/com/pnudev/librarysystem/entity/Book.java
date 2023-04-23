@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -15,7 +17,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.LinkedList;
 import java.util.List;
 
 
@@ -33,8 +34,8 @@ public class Book {
     @NotBlank
     private String title;
 
-    @NotBlank
-    private String coverImage;
+    @NotNull
+    private byte[] coverImage;
 
     @NotBlank
     private String description;
@@ -45,13 +46,23 @@ public class Book {
     @NotNull
     private Integer quantity;
 
-    @ManyToMany(mappedBy = "books")
-    private List<Author> authors = new LinkedList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "book-author",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id")
+    )
+    private List<Author> authors;
 
-    @ManyToMany(mappedBy = "books")
-    private List<Category> categories = new LinkedList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "book-category",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> categories;
 
     @OneToMany(mappedBy = "book")
-    private List<Borrowing> borrowings = new LinkedList<>();
+    private List<Borrowing> borrowings;
 
 }
