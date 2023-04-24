@@ -7,6 +7,7 @@ import com.pnudev.librarysystem.dto.FormBookDTO;
 import com.pnudev.librarysystem.entity.Author;
 import com.pnudev.librarysystem.entity.Book;
 import com.pnudev.librarysystem.entity.Category;
+import com.pnudev.librarysystem.exception.DeleteFailedException;
 import com.pnudev.librarysystem.mapper.AuthorMapper;
 import com.pnudev.librarysystem.mapper.BookMapper;
 import com.pnudev.librarysystem.mapper.CategoryMapper;
@@ -82,6 +83,17 @@ public class BookService {
         List<CategoryDTO> categoryDTOS = categoryService.findAllById(categoryIds);
         List<Category> categories = categoryMapper.toEntity(categoryDTOS);
         book.setCategories(categories);
+    }
+
+    public void deleteBookById(Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Book with id: %d not found".formatted(id)));
+
+        if(!book.getBorrowings().isEmpty()) {
+            throw new DeleteFailedException("Book with id: %d is used".formatted(id));
+        }
+
+        bookRepository.deleteById(id);
     }
 //
 //    public byte[] getBookImage(Long bookId) {
