@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @Data
-public class FormBookDTO {
+public class RequestBookDTO {
     @NotBlank(message = "Title must be specified")
     private String title;
 

@@ -1,6 +1,9 @@
 package com.pnudev.librarysystem.entity;
 
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -54,6 +57,11 @@ public class Book {
     )
     private List<Author> authors;
 
+    @ElementCollection
+    @CollectionTable(name="book-author", joinColumns=@JoinColumn(name="book_id"))
+    @Column(name="author_id")
+    private List<Long> authorIds;
+
     @ManyToMany
     @JoinTable(
             name = "book-category",
@@ -61,6 +69,11 @@ public class Book {
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private List<Category> categories;
+
+    @ElementCollection
+    @CollectionTable(name="book-category", joinColumns=@JoinColumn(name="book_id"))
+    @Column(name="category_id")
+    private List<Long> categoryIds;
 
     @OneToMany(mappedBy = "book")
     private List<Borrowing> borrowings;
