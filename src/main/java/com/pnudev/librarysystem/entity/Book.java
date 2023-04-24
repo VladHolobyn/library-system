@@ -37,8 +37,8 @@ public class Book {
     @NotBlank
     private String title;
 
-    @NotNull
-    private byte[] coverImage;
+    @NotBlank
+    private String coverImage;
 
     @NotBlank
     private String description;

@@ -6,3 +6,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+file:
+  upload-dir: "./uploads"
+  image-types: jpg, jpeg, png
