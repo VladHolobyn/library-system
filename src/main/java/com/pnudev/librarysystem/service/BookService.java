@@ -38,22 +38,50 @@ public class BookService {
             throw new IllegalArgumentException("Wrong file type: only .jpeg/.jpg are allowed");
         }
 
-        Book book = null;
+        Book book;
         try {
             book = bookMapper.toEntity(formBookDTO);
         } catch (IOException e) {
             throw new IllegalArgumentException("IOException occurred in file: " + e.getMessage());
         }
 
-        List<AuthorDTO> authorDTOS = authorService.findAllById(formBookDTO.getAuthorIds());
-        List<Author> authors = authorMapper.toEntity(authorDTOS);
-        book.setAuthors(authors);
+        this.setBookAuthors(book, formBookDTO.getAuthorIds());
+        this.setBookCategories(book,formBookDTO.getCategoryIds());
 
-        List<CategoryDTO> categoryDTOS = categoryService.findAllById(formBookDTO.getCategoryIds());
-        List<Category> categories = categoryMapper.toEntity(categoryDTOS);
-        book.setCategories(categories);
 
         return bookMapper.toDTO(bookRepository.save(book));
+    }
+
+    public BookDTO updateBook(Long id, FormBookDTO formBookDTO) {
+        String fileContentType = formBookDTO.getCoverImage().getContentType();
+
+        if (!Pattern.matches("image/jpe?g", fileContentType)) {
+            throw new IllegalArgumentException("Wrong file type: only .jpeg/.jpg are allowed");
+        }
+
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Book with id: %d not found".formatted(id)));
+        try {
+            bookMapper.updateBookFromFormDTO(formBookDTO, book);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("IOException occurred in file: " + e.getMessage());
+        }
+
+        this.setBookAuthors(book, formBookDTO.getAuthorIds());
+        this.setBookCategories(book,formBookDTO.getCategoryIds());
+
+        return bookMapper.toDTO(bookRepository.save(book));
+    }
+
+    private void setBookAuthors(Book book, List<Long> authorIds){
+        List<AuthorDTO> authorDTOS = authorService.findAllById(authorIds);
+        List<Author> authors = authorMapper.toEntity(authorDTOS);
+        book.setAuthors(authors);
+    }
+    private void setBookCategories(Book book, List<Long> categoryIds){
+        List<CategoryDTO> categoryDTOS = categoryService.findAllById(categoryIds);
+        List<Category> categories = categoryMapper.toEntity(categoryDTOS);
+        book.setCategories(categories);
     }
 //
 //    public byte[] getBookImage(Long bookId) {
