@@ -11,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -47,10 +46,6 @@ public class CategoryService {
         }
 
         categoryRepository.deleteById(id);
-    }
-
-    public List<CategoryDTO> findAllById(List<Long> ids){
-        return categoryRepository.findAllById(ids).stream().map(categoryMapper::toDTO).toList();
     }
 
 }

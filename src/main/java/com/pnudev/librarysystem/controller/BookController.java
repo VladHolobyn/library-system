@@ -36,6 +36,25 @@ public class BookController {
         return bookService.createBook(requestBookDTO);
     }
 
+    @GetMapping(value = "/{id}/image",  produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public byte[] getBookImage(@PathVariable Long id){
+        return bookService.getBookImage(id);
+    }
+
+    @GetMapping
+    public Page<BookDTO> searchBook(
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "authorLastName", required = false) String authorLastname,
+            @RequestParam(value = "category", required = false) String categoryName,
+            @PageableDefault Pageable pageable
+    ){
+        return bookService.searchBook(title, authorLastname, categoryName, pageable);
+    }
+    @GetMapping("/{id}")
+    public BookDTO getBookById(@PathVariable Long id) {
+        return bookService.getBookById(id);
+    }
+
     @PutMapping("/{id}")
     public BookDTO updateBook(@PathVariable Long id, @Valid @ModelAttribute RequestBookDTO requestBookDTO) {
         return bookService.updateBook(id, requestBookDTO);
