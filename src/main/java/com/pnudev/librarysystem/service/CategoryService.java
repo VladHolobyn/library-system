@@ -18,12 +18,12 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
-    public Page<CategoryDTO> searchCategoryByName(String name, int pageNumber, int size){
+    public Page<CategoryDTO> searchCategoryByName(String name, int pageNumber, int size) {
         Page<Category> page = categoryRepository.findAllByNameContains(name, PageRequest.of(pageNumber, size));
         return page.map(categoryMapper::toDTO);
     }
 
-    public CategoryDTO addCategory(CategoryDTO categoryDTO){
+    public CategoryDTO addCategory(CategoryDTO categoryDTO) {
         return categoryMapper.toDTO(categoryRepository.save(categoryMapper.toEntity(categoryDTO)));
     }
 
@@ -39,9 +39,9 @@ public class CategoryService {
 
     public void deleteCategory(Long id) {
         Category category = categoryRepository.findById(id)
-                .orElseThrow(()-> new EntityNotFoundException("Category with id: %d not found".formatted(id)));
+                .orElseThrow(() -> new EntityNotFoundException("Category with id: %d not found".formatted(id)));
 
-        if(!category.getBooks().isEmpty()){
+        if (!category.getBooks().isEmpty()) {
             throw new DeleteFailedException("Category with id: %d is used".formatted(id));
         }
 

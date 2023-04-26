@@ -10,7 +10,7 @@ import org.mapstruct.MappingTarget;
 
 
 @Mapper(componentModel = "spring",
-uses = {CategoryMapper.class, AuthorMapper.class})
+        uses = {CategoryMapper.class, AuthorMapper.class})
 public interface BookMapper {
 
     @Mapping(target = "coverImage", source = "coverImageName")
@@ -18,7 +18,7 @@ public interface BookMapper {
 
     @Mapping(
             target = "coverImageUrl",
-            expression = "java(\"/books/\" + book.getId() + \"/image\")"
+            expression = "java(\"/books/%d/image\".formatted(book.getId()))"
     )
     BookDTO toDTO(Book book);
 

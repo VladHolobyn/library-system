@@ -9,9 +9,10 @@ import com.pnudev.librarysystem.exception.FileWrongTypeException;
 import com.pnudev.librarysystem.exception.IOErrorInFileException;
 import com.pnudev.librarysystem.mapper.BookMapper;
 import com.pnudev.librarysystem.repository.BookRepository;
-import com.pnudev.librarysystem.util.SpecificationUtils;
+import com.pnudev.librarysystem.specification.BookSpecificationBuilder;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +32,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class BookService {
+    private static final String BOOK_NOT_FOUND_MSG_FORMAT = "Book with id: %d not found";
 
     @Value("${file.upload-dir}/books")
     private String uploadDir;
@@ -40,9 +42,10 @@ public class BookService {
 
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
+    private final BookSpecificationBuilder bookSpecificationBuilder;
 
 
-    public Long createBook(RequestBookDTO requestBookDTO)  {
+    public Long createBook(RequestBookDTO requestBookDTO) {
         Book book = bookMapper.toEntity(requestBookDTO);
         Book savedBook = bookRepository.save(book);
         return savedBook.getId();
@@ -50,7 +53,7 @@ public class BookService {
 
     public BookDTO updateBook(Long id, RequestBookDTO requestBookDTO) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Book with id: %d not found".formatted(id)));
+                .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND_MSG_FORMAT.formatted(id)));
 
         bookMapper.updateBookFromRequestDTO(requestBookDTO, book);
 
@@ -59,9 +62,9 @@ public class BookService {
 
     public void deleteBookById(Long id) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Book with id: %d not found".formatted(id)));
+                .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND_MSG_FORMAT.formatted(id)));
 
-        if(!book.getBorrowings().isEmpty()) {
+        if (!book.getBorrowings().isEmpty()) {
             throw new DeleteFailedException("Book with id: %d is used".formatted(id));
         }
 
@@ -71,17 +74,17 @@ public class BookService {
     public Page<BookDTO> searchBook(String title, String authorLastName, String categoryName, Pageable pageable) {
         Specification<Book> specification = Specification.where(null);
 
-        if (title != null && !title.isEmpty()) {
-            specification = specification.and(SpecificationUtils.<Book>fieldContainsIgnoreCase("title", title));
+        if (!StringUtils.isEmpty(title)) {
+            specification = specification.and(bookSpecificationBuilder.fieldContainsIgnoreCase("title", title));
         }
-        if (authorLastName != null && !authorLastName.isEmpty()){
+        if (!StringUtils.isEmpty(authorLastName)) {
             specification = specification.and(
-                    SpecificationUtils.<Book>joinTableFieldContainsIgnoreCase("authors", "lastName", authorLastName)
+                    bookSpecificationBuilder.joinTableFieldContainsIgnoreCase("authors", "lastName", authorLastName)
             );
         }
-        if (categoryName != null && !categoryName.isEmpty()){
+        if (!StringUtils.isEmpty(categoryName)) {
             specification = specification.and(
-                    SpecificationUtils.<Book>joinTableFieldContainsIgnoreCase("categories", "name", categoryName)
+                    bookSpecificationBuilder.joinTableFieldContainsIgnoreCase("categories", "name", categoryName)
             );
         }
 
@@ -91,23 +94,21 @@ public class BookService {
 
     public BookDTO getBookById(Long id) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Book with id: %d not found".formatted(id)));
+                .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND_MSG_FORMAT.formatted(id)));
         return bookMapper.toDTO(book);
     }
 
     public String uploadCoverImage(MultipartFile file) {
-        if(file.isEmpty()) {
+        if (file.isEmpty()) {
             throw new EmptyFileException("File cannot be empty");
         }
 
-        String originalFileName = file.getOriginalFilename();
-        String fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".")+1);
-
+        String fileExtension = StringUtils.substringAfterLast(file.getOriginalFilename(), ".");
         if (!imageTypes.contains(fileExtension)) {
             throw new FileWrongTypeException(imageTypes);
         }
 
-        Path uploadPath= Paths.get(uploadDir);
+        Path uploadPath = Paths.get(uploadDir);
         if (!Files.exists(uploadPath)) {
             try {
                 Files.createDirectory(uploadPath);
@@ -120,7 +121,7 @@ public class BookService {
         Path imagePath = uploadPath.resolve(filename);
 
         try {
-            Files.copy(file.getInputStream(),imagePath, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(file.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new IOErrorInFileException("IOException occurred while saving file to filesystem: " + e.getMessage());
         }
@@ -130,7 +131,7 @@ public class BookService {
 
     public byte[] getBookImage(Long bookId) {
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new EntityNotFoundException("Book with id: %d not found".formatted(bookId)));
+                .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND_MSG_FORMAT.formatted(bookId)));
         try {
             return Files.readAllBytes(Paths.get(uploadDir).resolve(book.getCoverImage()));
         } catch (IOException e) {

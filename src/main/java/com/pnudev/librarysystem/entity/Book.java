@@ -51,28 +51,28 @@ public class Book {
 
     @ManyToMany
     @JoinTable(
-            name = "book-author",
+            name = "book_author",
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id")
     )
     private List<Author> authors;
 
     @ElementCollection
-    @CollectionTable(name="book-author", joinColumns=@JoinColumn(name="book_id"))
-    @Column(name="author_id")
+    @CollectionTable(name = "book_author", joinColumns = @JoinColumn(name = "book_id"))
+    @Column(name = "author_id")
     private List<Long> authorIds;
 
     @ManyToMany
     @JoinTable(
-            name = "book-category",
+            name = "book_category",
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private List<Category> categories;
 
     @ElementCollection
-    @CollectionTable(name="book-category", joinColumns=@JoinColumn(name="book_id"))
-    @Column(name="category_id")
+    @CollectionTable(name = "book_category", joinColumns = @JoinColumn(name = "book_id"))
+    @Column(name = "category_id")
     private List<Long> categoryIds;
 
     @OneToMany(mappedBy = "book")

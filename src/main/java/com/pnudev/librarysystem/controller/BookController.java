@@ -42,8 +42,8 @@ public class BookController {
         return bookService.uploadCoverImage(file);
     }
 
-    @GetMapping(value = "/{id}/image",  produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public byte[] getBookImage(@PathVariable Long id){
+    @GetMapping(value = "/{id}/image", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public byte[] getBookImage(@PathVariable Long id) {
         return bookService.getBookImage(id);
     }
 
@@ -53,7 +53,7 @@ public class BookController {
             @RequestParam(value = "authorLastName", required = false) String authorLastname,
             @RequestParam(value = "category", required = false) String categoryName,
             @PageableDefault Pageable pageable
-    ){
+    ) {
         return bookService.searchBook(title, authorLastname, categoryName, pageable);
     }
 
@@ -69,7 +69,7 @@ public class BookController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteBook(@PathVariable Long id){
+    public void deleteBook(@PathVariable Long id) {
         bookService.deleteBookById(id);
     }
 
