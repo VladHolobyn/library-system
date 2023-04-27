@@ -5,10 +5,11 @@ import com.pnudev.librarysystem.entity.Author;
 import com.pnudev.librarysystem.exception.DeleteFailedException;
 import com.pnudev.librarysystem.mapper.AuthorMapper;
 import com.pnudev.librarysystem.repository.AuthorRepository;
-import com.pnudev.librarysystem.util.SpecificationUtils;
+import com.pnudev.librarysystem.specification.AuthorSpecificationBuilder;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -21,6 +22,7 @@ public class AuthorService {
 
     private final AuthorRepository authorRepository;
     private final AuthorMapper authorMapper;
+    private final AuthorSpecificationBuilder authorSpecificationBuilder;
 
     public AuthorDTO addAuthor(AuthorDTO authorDTO) {
         Author author = authorMapper.toEntity(authorDTO);
@@ -30,9 +32,9 @@ public class AuthorService {
 
     public void deleteAuthor(Long id) {
         Author author = authorRepository.findById(id)
-                .orElseThrow(()-> new EntityNotFoundException("Author with id: %d not found".formatted(id)));
+                .orElseThrow(() -> new EntityNotFoundException("Author with id: %d not found".formatted(id)));
 
-        if(!author.getBooks().isEmpty()){
+        if (!author.getBooks().isEmpty()) {
             throw new DeleteFailedException("Author with id: %d is used".formatted(id));
         }
 
@@ -41,9 +43,9 @@ public class AuthorService {
 
     public AuthorDTO updateAuthor(Long id, AuthorDTO authorDTO) {
         Author author = authorRepository.findById(id)
-                .orElseThrow(()-> new EntityNotFoundException("Author with id: %d not found".formatted(id)));
+                .orElseThrow(() -> new EntityNotFoundException("Author with id: %d not found".formatted(id)));
 
-        authorMapper.updateAuthorFromDTO(authorDTO,author);
+        authorMapper.updateAuthorFromDTO(authorDTO, author);
 
         return authorMapper.toDTO(authorRepository.save(author));
     }
@@ -51,11 +53,11 @@ public class AuthorService {
     public Page<AuthorDTO> searchAuthorByParams(String firstName, String lastName, Pageable pageable) {
         Specification<Author> specification = Specification.where(null);
 
-        if (firstName != null && !firstName.isEmpty()) {
-            specification = specification.and(SpecificationUtils.<Author>fieldContainsIgnoreCase("firstName",firstName));
+        if (!StringUtils.isEmpty(firstName)) {
+            specification = specification.and(authorSpecificationBuilder.fieldContainsIgnoreCase("firstName", firstName));
         }
-        if (lastName != null && !lastName.isEmpty()){
-            specification = specification.and(SpecificationUtils.<Author>fieldContainsIgnoreCase("lastName",lastName));
+        if (!StringUtils.isEmpty(lastName)) {
+            specification = specification.and(authorSpecificationBuilder.fieldContainsIgnoreCase("lastName", lastName));
         }
 
         Page<Author> page = authorRepository.findAll(specification, pageable);

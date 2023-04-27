@@ -5,8 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -31,12 +29,7 @@ public class Category {
     @NotBlank
     private String name;
 
-    @ManyToMany
-    @JoinTable(
-        name = "book-category",
-        joinColumns = @JoinColumn(name = "category_id"),
-        inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
+    @ManyToMany(mappedBy = "categories")
     private List<Book> books;
 
 }
