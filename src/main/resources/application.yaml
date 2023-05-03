@@ -9,3 +9,6 @@ spring:
 file:
   upload-dir: "./uploads"
   image-types: jpg, jpeg, png
+application:
+  secret-key: ${SECRET_KEY}
+  token-expiration-time: 36000000
