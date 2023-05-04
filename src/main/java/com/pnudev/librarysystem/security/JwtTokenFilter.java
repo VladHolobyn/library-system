@@ -37,7 +37,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
 
         String jwt = authHeader.substring(7);
-
         UserDetails userDetails = jwtService.extractUserDetails(jwt);
 
         UsernamePasswordAuthenticationToken authentication =
