@@ -1,6 +1,6 @@
 package com.pnudev.librarysystem.security;
 
-import com.pnudev.librarysystem.enums.UserStatus;
+import com.pnudev.librarysystem.enums.UserRole;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,7 +15,7 @@ public class UserDetailsImpl implements UserDetails {
 
     private String email;
     private String password;
-    private UserStatus role;
+    private UserRole role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

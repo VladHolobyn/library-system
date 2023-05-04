@@ -2,7 +2,7 @@ package com.pnudev.librarysystem.service;
 
 import com.pnudev.librarysystem.dto.AuthenticationResponseDTO;
 import com.pnudev.librarysystem.dto.LoginUserDTO;
-import com.pnudev.librarysystem.enums.UserStatus;
+import com.pnudev.librarysystem.enums.UserRole;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,7 +28,7 @@ public class AuthService {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
         String email = userDetails.getUsername();
-        UserStatus role = UserStatus.valueOf(
+        UserRole role = UserRole.valueOf(
                 userDetails.getAuthorities().stream().map(Object::toString).toList().get(0));
 
         String jwt = jwtService.generateToken(email, role);

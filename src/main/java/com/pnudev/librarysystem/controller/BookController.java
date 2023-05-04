@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,23 +31,27 @@ public class BookController {
 
     private final BookService bookService;
 
+    @Secured("ADMIN")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Long createBook(@Valid @RequestBody RequestBookDTO requestBookDTO) {
         return bookService.createBook(requestBookDTO);
     }
 
+    @Secured("ADMIN")
     @PostMapping("/images")
     @ResponseStatus(HttpStatus.CREATED)
     public String uploadBookImage(@RequestParam MultipartFile file) {
         return bookService.uploadCoverImage(file);
     }
 
+    @Secured({"ADMIN", "CLIENT"})
     @GetMapping(value = "/{id}/image", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public byte[] getBookImage(@PathVariable Long id) {
         return bookService.getBookImage(id);
     }
 
+    @Secured({"ADMIN", "CLIENT"})
     @GetMapping
     public Page<BookDTO> searchBook(
             @RequestParam(value = "title", required = false) String title,
@@ -57,16 +62,19 @@ public class BookController {
         return bookService.searchBook(title, authorLastname, categoryName, pageable);
     }
 
+    @Secured({"ADMIN", "CLIENT"})
     @GetMapping("/{id}")
     public BookDTO getBookById(@PathVariable Long id) {
         return bookService.getBookById(id);
     }
 
+    @Secured("ADMIN")
     @PutMapping("/{id}")
     public BookDTO updateBook(@PathVariable Long id, @Valid @RequestBody RequestBookDTO requestBookDTO) {
         return bookService.updateBook(id, requestBookDTO);
     }
 
+    @Secured("ADMIN")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBook(@PathVariable Long id) {

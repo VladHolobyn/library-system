@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,12 +28,13 @@ public class CategoryController {
     private final CategoryService categoryService;
 
 
+    @Secured({"ADMIN", "CLIENT"})
     @GetMapping
     public Page<CategoryDTO> searchCategoryByName(
             @RequestParam("name") String name,
             @RequestParam("page") Optional<Integer> pageNumber,
             @RequestParam("size") Optional<Integer> size
-    ){
+    ) {
         return categoryService.searchCategoryByName(
                 name,
                 pageNumber.filter(p -> p > 0).orElse(0),
@@ -40,20 +42,23 @@ public class CategoryController {
         );
     }
 
+    @Secured("ADMIN")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDTO addCategory(@Valid @RequestBody CategoryDTO categoryDTO){
+    public CategoryDTO addCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
         return categoryService.addCategory(categoryDTO);
     }
 
+    @Secured("ADMIN")
     @PutMapping
-    public CategoryDTO updateCategory(@Valid @RequestBody CategoryDTO categoryDTO){
+    public CategoryDTO updateCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
         return categoryService.updateCategory(categoryDTO);
     }
 
+    @Secured("ADMIN")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCategory(@PathVariable Long id){
+    public void deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
     }
 

@@ -1,5 +1,5 @@
 package com.pnudev.librarysystem.enums;
 
-public enum UserStatus {
+public enum UserRole {
     CLIENT, ADMIN
 }

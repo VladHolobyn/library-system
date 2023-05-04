@@ -1,7 +1,7 @@
 package com.pnudev.librarysystem.service;
 
 import com.pnudev.librarysystem.security.UserDetailsImpl;
-import com.pnudev.librarysystem.enums.UserStatus;
+import com.pnudev.librarysystem.enums.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -22,7 +22,7 @@ public class JwtService {
     private int expirationTime;
 
 
-    public String generateToken(String email, UserStatus role) {
+    public String generateToken(String email, UserRole role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role);
 
@@ -44,7 +44,7 @@ public class JwtService {
         return new UserDetailsImpl(
                 claims.getSubject(),
                 null,
-                UserStatus.valueOf(claims.get("role", String.class))
+                UserRole.valueOf(claims.get("role", String.class))
         );
     }
 

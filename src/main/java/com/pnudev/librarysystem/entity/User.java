@@ -1,6 +1,6 @@
 package com.pnudev.librarysystem.entity;
 
-import com.pnudev.librarysystem.enums.UserStatus;
+import com.pnudev.librarysystem.enums.UserRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -43,13 +43,13 @@ public class User {
     private String address;
 
     @NotBlank
-    private String phone_number;
+    private String phoneNumber;
 
     @NotBlank
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private UserStatus role;
+    private UserRole role;
 
     @OneToMany(mappedBy = "user")
     private List<Borrowing> borrowedBooks;
