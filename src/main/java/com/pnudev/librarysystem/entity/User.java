@@ -1,6 +1,6 @@
 package com.pnudev.librarysystem.entity;
 
-import com.pnudev.librarysystem.enums.UserStatus;
+import com.pnudev.librarysystem.enums.UserRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,6 +12,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,6 +23,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "\"user\"")
 public class User {
@@ -43,13 +45,13 @@ public class User {
     private String address;
 
     @NotBlank
-    private String phone_number;
+    private String phoneNumber;
 
     @NotBlank
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private UserStatus role;
+    private UserRole role;
 
     @OneToMany(mappedBy = "user")
     private List<Borrowing> borrowedBooks;
