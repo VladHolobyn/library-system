@@ -8,9 +8,14 @@ import com.pnudev.librarysystem.enums.UserRole;
 import com.pnudev.librarysystem.exception.NotUniqueException;
 import com.pnudev.librarysystem.mapper.UserMapper;
 import com.pnudev.librarysystem.repository.UserRepository;
+import com.pnudev.librarysystem.specification.UserSpecificationBuilder;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +27,7 @@ import org.springframework.stereotype.Service;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final UserSpecificationBuilder userSpecificationBuilder;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
@@ -73,4 +79,20 @@ public class UserService implements UserDetailsService {
         return userMapper.toDTO(userRepository.save(user));
     }
 
+    public Page<UserDTO> searchBook(String lastName, String email, String phoneNumber, Pageable pageable) {
+        Specification<User> specification = Specification.where(null);
+
+        if (!StringUtils.isEmpty(lastName)) {
+            specification = specification.and(userSpecificationBuilder.fieldContainsIgnoreCase("lastName", lastName));
+        }
+        if (!StringUtils.isEmpty(email)) {
+            specification = specification.and(userSpecificationBuilder.fieldContainsIgnoreCase("email", email));
+        }
+        if (!StringUtils.isEmpty(phoneNumber)) {
+            specification = specification.and(userSpecificationBuilder.fieldContainsIgnoreCase("phoneNumber", phoneNumber));
+        }
+
+        Page<User> page = userRepository.findAll(specification, pageable);
+        return page.map(userMapper::toDTO);
+    }
 }
