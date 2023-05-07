@@ -1,10 +1,13 @@
 package com.pnudev.librarysystem.mapper;
 
 import com.pnudev.librarysystem.dto.CreateUserDTO;
+import com.pnudev.librarysystem.dto.UpdateUserDTO;
+import com.pnudev.librarysystem.dto.UserDTO;
 import com.pnudev.librarysystem.security.UserDetailsImpl;
 import com.pnudev.librarysystem.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -15,6 +18,13 @@ public abstract class UserMapper {
 
     public abstract UserDetailsImpl toUserDetails(User user);
 
-    @Mapping(target = "password", expression = "java(passwordEncoder.encode(createUserDTO.getPassword()))")
-    public abstract User toEntity(CreateUserDTO createUserDTO);
+    @Mapping(target = "password", expression = "java(passwordEncoder.encode(userDTO.getPassword()))")
+    public abstract User toEntity(CreateUserDTO userDTO);
+    public abstract UserDTO toDTO(User user);
+
+    @Mapping(
+            target = "password",
+            expression = "java(userDTO.getPassword() == null ? user.getPassword(): passwordEncoder.encode(userDTO.getPassword()))"
+    )
+    public abstract void updateUserFromDTO(UpdateUserDTO userDTO, @MappingTarget User user);
 }
