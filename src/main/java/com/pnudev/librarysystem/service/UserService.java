@@ -65,7 +65,7 @@ public class UserService implements UserDetailsService {
 
     public UserDTO createUser(CreateUserDTO userDTO) {
         if (userRepository.existsByEmail(userDTO.getEmail())) {
-            throw new NotUniqueException("User with such email already exists");
+            throw new NotUniqueException("User with this email already exists");
         }
         User user = userMapper.toEntity(userDTO);
         return userMapper.toDTO(userRepository.save(user));

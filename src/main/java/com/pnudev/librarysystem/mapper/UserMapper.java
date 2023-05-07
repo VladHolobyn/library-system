@@ -24,7 +24,7 @@ public abstract class UserMapper {
 
     @Mapping(
             target = "password",
-            expression = "java(userDTO.getPassword() == null ? user.getPassword(): passwordEncoder.encode(userDTO.getPassword()))"
+            expression = "java(userDTO.getPassword() == null ? user.getPassword() : passwordEncoder.encode(userDTO.getPassword()))"
     )
     public abstract void updateUserFromDTO(UpdateUserDTO userDTO, @MappingTarget User user);
 }
