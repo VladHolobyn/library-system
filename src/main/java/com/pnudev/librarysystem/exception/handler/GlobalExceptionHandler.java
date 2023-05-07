@@ -5,6 +5,7 @@ import com.pnudev.librarysystem.exception.DeleteFailedException;
 import com.pnudev.librarysystem.exception.EmptyFileException;
 import com.pnudev.librarysystem.exception.FileWrongTypeException;
 import com.pnudev.librarysystem.exception.IOErrorInFileException;
+import com.pnudev.librarysystem.exception.NotUniqueException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -62,6 +63,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO handleAuthenticationException(AuthenticationException e) {
+        return new ErrorDTO(List.of(e.getMessage()));
+    }
+
+    @ExceptionHandler(NotUniqueException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDTO handleNotUniqueException(NotUniqueException e) {
         return new ErrorDTO(List.of(e.getMessage()));
     }
 

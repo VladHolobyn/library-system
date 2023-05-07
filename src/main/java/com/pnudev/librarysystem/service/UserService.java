@@ -1,7 +1,9 @@
 package com.pnudev.librarysystem.service;
 
+import com.pnudev.librarysystem.dto.CreateUserDTO;
 import com.pnudev.librarysystem.entity.User;
 import com.pnudev.librarysystem.enums.UserRole;
+import com.pnudev.librarysystem.exception.NotUniqueException;
 import com.pnudev.librarysystem.mapper.UserMapper;
 import com.pnudev.librarysystem.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -53,4 +55,13 @@ public class UserService implements UserDetailsService {
         userRepository.save(admin);
     }
 
+    public Long createUser(CreateUserDTO createUserDTO) {
+        if (userRepository.existsByEmail(createUserDTO.getEmail())) {
+            throw new NotUniqueException("User with such email already exists");
+        }
+
+        User user = userMapper.toEntity(createUserDTO);
+        user = userRepository.save(user);
+        return user.getId();
+    }
 }
