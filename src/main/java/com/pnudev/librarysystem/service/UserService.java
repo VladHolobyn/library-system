@@ -82,13 +82,13 @@ public class UserService implements UserDetailsService {
     public Page<UserDTO> searchBook(String lastName, String email, String phoneNumber, Pageable pageable) {
         Specification<User> specification = Specification.where(null);
 
-        if (!StringUtils.isEmpty(lastName)) {
+        if (StringUtils.isNotEmpty(lastName)) {
             specification = specification.and(userSpecificationBuilder.fieldContainsIgnoreCase("lastName", lastName));
         }
-        if (!StringUtils.isEmpty(email)) {
+        if (StringUtils.isNotEmpty(email)) {
             specification = specification.and(userSpecificationBuilder.fieldContainsIgnoreCase("email", email));
         }
-        if (!StringUtils.isEmpty(phoneNumber)) {
+        if (StringUtils.isNotEmpty(phoneNumber)) {
             specification = specification.and(userSpecificationBuilder.fieldContainsIgnoreCase("phoneNumber", phoneNumber));
         }
 
