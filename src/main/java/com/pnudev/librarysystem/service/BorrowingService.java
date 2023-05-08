@@ -24,6 +24,9 @@ public class BorrowingService {
     private final BorrowingRepository borrowingRepository;
     private final BorrowingMapper borrowingMapper;
 
+    @Value("${application.reservation.expiration-in-days}")
+    private int reservationExpirationInDays;
+
 
     public void reserveBook(UserDetailsImpl userDetailsImpl, CreateBorrowingDTO createBorrowingDTO) {
         Long userId = userDetailsImpl.getId();
@@ -66,5 +69,7 @@ public class BorrowingService {
         return borrowings.stream().map(borrowingMapper::toDTO).toList();
     }
 
-
+    public void cleanUpExpiredReservation() {
+        borrowingRepository.deleteAllReservationDateIsBefore(LocalDate.now().minusDays(reservationExpirationInDays));
+    }
 }

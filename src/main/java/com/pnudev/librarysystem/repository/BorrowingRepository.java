@@ -14,4 +14,10 @@ public interface BorrowingRepository extends JpaRepository<Borrowing, Long> {
             value = "SELECT * FROM borrowing b WHERE cast(b.status as text) != 'RETURNED' AND b.user_id = ?1")
     List<Borrowing> findAllActiveUserBorrowings(Long userId);
 
+    @Query(nativeQuery = true,
+            value = "DELETE FROM Borrowing b WHERE cast(b.status as text) = 'RESERVED' and b.reservation_date < ?1")
+    @Modifying
+    @Transactional
+    void deleteAllReservationDateIsBefore(LocalDate time);
+
 }
