@@ -22,9 +22,10 @@ public class JwtService {
     private int expirationTime;
 
 
-    public String generateToken(String email, UserRole role) {
+    public String generateToken(String email, Long userId, UserRole role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role);
+        claims.put("userId", userId);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -42,6 +43,7 @@ public class JwtService {
                 .getBody();
 
         return new UserDetailsImpl(
+                claims.get("userId", Long.class),
                 claims.getSubject(),
                 null,
                 UserRole.valueOf(claims.get("role", String.class))

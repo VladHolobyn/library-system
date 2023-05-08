@@ -12,7 +12,7 @@ import java.util.List;
 
 @AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
-
+    private Long id;
     private String email;
     private String password;
     private UserRole role;
@@ -50,6 +50,10 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public Long getId() {
+        return this.id;
     }
 
 }

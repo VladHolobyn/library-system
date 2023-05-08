@@ -3,7 +3,8 @@ package com.pnudev.librarysystem.service;
 import com.pnudev.librarysystem.dto.BookDTO;
 import com.pnudev.librarysystem.dto.RequestBookDTO;
 import com.pnudev.librarysystem.entity.Book;
-import com.pnudev.librarysystem.exception.DeleteFailedException;
+import com.pnudev.librarysystem.enums.BorrowingStatus;
+import com.pnudev.librarysystem.exception.OperationFailedException;
 import com.pnudev.librarysystem.exception.EmptyFileException;
 import com.pnudev.librarysystem.exception.FileWrongTypeException;
 import com.pnudev.librarysystem.exception.IOErrorInFileException;
@@ -65,7 +66,7 @@ public class BookService {
                 .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND_MSG_FORMAT.formatted(id)));
 
         if (!book.getBorrowings().isEmpty()) {
-            throw new DeleteFailedException("Book with id: %d is used".formatted(id));
+            throw new OperationFailedException("Book with id: %d is used".formatted(id));
         }
 
         bookRepository.deleteById(id);
@@ -139,4 +140,12 @@ public class BookService {
         }
     }
 
+    public boolean isBookAvailable(Long bookId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND_MSG_FORMAT.formatted(bookId)));
+
+        long unavailableBooksCount = book.getBorrowings().stream().filter(borrowing -> borrowing.getStatus() != BorrowingStatus.RETURNED).count();
+
+        return book.getQuantity() - unavailableBooksCount > 0;
+    }
 }

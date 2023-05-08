@@ -4,6 +4,7 @@ import com.pnudev.librarysystem.dto.CreateUserDTO;
 import com.pnudev.librarysystem.dto.UpdateUserDTO;
 import com.pnudev.librarysystem.dto.UserDTO;
 import com.pnudev.librarysystem.entity.User;
+import com.pnudev.librarysystem.enums.BorrowingStatus;
 import com.pnudev.librarysystem.enums.UserRole;
 import com.pnudev.librarysystem.exception.NotUniqueException;
 import com.pnudev.librarysystem.mapper.UserMapper;
@@ -36,6 +37,9 @@ public class UserService implements UserDetailsService {
 
     @Value("${application.default-admin.password}")
     private String defaultAdminPassword;
+
+    @Value("${application.max-reservation-count}")
+    private Integer maxReservationCount;
 
     @Override
     public UserDetails loadUserByUsername(String email) {
@@ -94,5 +98,13 @@ public class UserService implements UserDetailsService {
 
         Page<User> page = userRepository.findAll(specification, pageable);
         return page.map(userMapper::toDTO);
+    }
+
+    public boolean canUserReserve(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User with id:%d not found".formatted(id)));
+        long reservationCount = user.getBorrowedBooks().stream().filter(borrowing -> borrowing.getStatus() == BorrowingStatus.RESERVED).count();
+
+        return maxReservationCount - reservationCount > 0;
     }
 }

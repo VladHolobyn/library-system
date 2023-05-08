@@ -2,7 +2,7 @@ package com.pnudev.librarysystem.service;
 
 import com.pnudev.librarysystem.dto.AuthorDTO;
 import com.pnudev.librarysystem.entity.Author;
-import com.pnudev.librarysystem.exception.DeleteFailedException;
+import com.pnudev.librarysystem.exception.OperationFailedException;
 import com.pnudev.librarysystem.mapper.AuthorMapper;
 import com.pnudev.librarysystem.repository.AuthorRepository;
 import com.pnudev.librarysystem.specification.AuthorSpecificationBuilder;
@@ -35,7 +35,7 @@ public class AuthorService {
                 .orElseThrow(() -> new EntityNotFoundException("Author with id: %d not found".formatted(id)));
 
         if (!author.getBooks().isEmpty()) {
-            throw new DeleteFailedException("Author with id: %d is used".formatted(id));
+            throw new OperationFailedException("Author with id: %d is used".formatted(id));
         }
 
         authorRepository.deleteById(id);

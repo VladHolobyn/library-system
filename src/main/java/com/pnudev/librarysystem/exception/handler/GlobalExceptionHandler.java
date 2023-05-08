@@ -1,7 +1,7 @@
 package com.pnudev.librarysystem.exception.handler;
 
 import com.pnudev.librarysystem.dto.ErrorDTO;
-import com.pnudev.librarysystem.exception.DeleteFailedException;
+import com.pnudev.librarysystem.exception.OperationFailedException;
 import com.pnudev.librarysystem.exception.EmptyFileException;
 import com.pnudev.librarysystem.exception.FileWrongTypeException;
 import com.pnudev.librarysystem.exception.IOErrorInFileException;
@@ -36,9 +36,9 @@ public class GlobalExceptionHandler {
         return new ErrorDTO(List.of(ex.getMessage()));
     }
 
-    @ExceptionHandler(DeleteFailedException.class)
+    @ExceptionHandler(OperationFailedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErrorDTO handleDeleteError(DeleteFailedException ex) {
+    public ErrorDTO handleOperationFailedException(OperationFailedException ex) {
         return new ErrorDTO(List.of(ex.getMessage()));
     }
 
