@@ -1,5 +1,6 @@
 package com.pnudev.librarysystem.controller;
 
+import com.pnudev.librarysystem.dto.BorrowingDTO;
 import com.pnudev.librarysystem.dto.CreateBorrowingDTO;
 import com.pnudev.librarysystem.security.UserDetailsImpl;
 import com.pnudev.librarysystem.service.BorrowingService;
@@ -8,12 +9,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -37,5 +41,11 @@ public class BorrowingController {
             @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
             @PathVariable Long id) {
         borrowingService.cancelReservation(userDetailsImpl, id);
+    }
+
+    @PreAuthorize("hasAuthority('CLIENT')")
+    @GetMapping("/my")
+    public List<BorrowingDTO> findUserBorrowings(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        return borrowingService.findActiveUserBorrowings(userDetailsImpl);
     }
 }

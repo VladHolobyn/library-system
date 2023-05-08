@@ -38,7 +38,7 @@ public class UserService implements UserDetailsService {
     @Value("${application.default-admin.password}")
     private String defaultAdminPassword;
 
-    @Value("${application.max-reservation-count}")
+    @Value("${application.reservation.max-count-per-user}")
     private Integer maxReservationCount;
 
     @Override

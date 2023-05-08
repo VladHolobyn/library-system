@@ -1,16 +1,20 @@
 package com.pnudev.librarysystem.service;
 
+import com.pnudev.librarysystem.dto.BorrowingDTO;
 import com.pnudev.librarysystem.dto.CreateBorrowingDTO;
 import com.pnudev.librarysystem.entity.Borrowing;
 import com.pnudev.librarysystem.enums.BorrowingStatus;
 import com.pnudev.librarysystem.exception.OperationFailedException;
+import com.pnudev.librarysystem.mapper.BorrowingMapper;
 import com.pnudev.librarysystem.repository.BorrowingRepository;
 import com.pnudev.librarysystem.security.UserDetailsImpl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -18,6 +22,7 @@ public class BorrowingService {
     private final UserService userService;
     private final BookService bookService;
     private final BorrowingRepository borrowingRepository;
+    private final BorrowingMapper borrowingMapper;
 
 
     public void reserveBook(UserDetailsImpl userDetailsImpl, CreateBorrowingDTO createBorrowingDTO) {
@@ -55,4 +60,11 @@ public class BorrowingService {
 
         borrowingRepository.delete(borrowing);
     }
+
+    public List<BorrowingDTO> findActiveUserBorrowings(UserDetailsImpl userDetailsImpl) {
+        List<Borrowing> borrowings = borrowingRepository.findAllActiveUserBorrowings(userDetailsImpl.getId());
+        return borrowings.stream().map(borrowingMapper::toDTO).toList();
+    }
+
+
 }

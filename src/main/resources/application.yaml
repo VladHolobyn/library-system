@@ -17,4 +17,6 @@ application:
   default-admin:
     email: ${ADMIN_EMAIL:app@gmail.com}
     password: ${ADMIN_PASSWORD:admin}
-  max-reservation-count: 5
+  reservation:
+    max-count-per-user: 5
+    expiration-in-days: 2
