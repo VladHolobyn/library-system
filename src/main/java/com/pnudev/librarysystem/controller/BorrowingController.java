@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,5 +28,14 @@ public class BorrowingController {
             @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
             @Valid @RequestBody CreateBorrowingDTO createBorrowingDTO) {
         borrowingService.reserveBook(userDetailsImpl, createBorrowingDTO);
+    }
+
+    @PreAuthorize("hasAuthority('CLIENT')")
+    @PostMapping("/{id}/cancel")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void cancelReservation(
+            @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+            @PathVariable Long id) {
+        borrowingService.cancelReservation(userDetailsImpl, id);
     }
 }

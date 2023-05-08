@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(OperationFailedException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO handleOperationFailedException(OperationFailedException ex) {
         return new ErrorDTO(List.of(ex.getMessage()));
     }

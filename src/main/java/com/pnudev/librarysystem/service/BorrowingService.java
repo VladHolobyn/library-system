@@ -6,6 +6,7 @@ import com.pnudev.librarysystem.enums.BorrowingStatus;
 import com.pnudev.librarysystem.exception.OperationFailedException;
 import com.pnudev.librarysystem.repository.BorrowingRepository;
 import com.pnudev.librarysystem.security.UserDetailsImpl;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -38,5 +39,20 @@ public class BorrowingService {
                 .status(BorrowingStatus.RESERVED)
                 .build();
         borrowingRepository.save(borrowing);
+    }
+
+    public void cancelReservation(UserDetailsImpl userDetailsImpl, Long reservationId) {
+        Borrowing borrowing = borrowingRepository.findById(reservationId)
+                .orElseThrow(() -> new EntityNotFoundException("Borrowing with id: %d not found".formatted(reservationId)));
+
+        if (!borrowing.getUserId().equals(userDetailsImpl.getId())) {
+            throw new OperationFailedException("User does not have borrowing with id: %d".formatted(reservationId));
+        }
+
+        if (borrowing.getStatus() != BorrowingStatus.RESERVED) {
+            throw new OperationFailedException("Borrowing must have RESERVED status");
+        }
+
+        borrowingRepository.delete(borrowing);
     }
 }
