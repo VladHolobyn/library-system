@@ -70,6 +70,6 @@ public class BorrowingService {
     }
 
     public void cleanUpExpiredReservation() {
-        borrowingRepository.deleteAllReservationDateIsBefore(LocalDate.now().minusDays(reservationExpirationInDays));
+        borrowingRepository.deleteAllReservationByDateIsBefore(LocalDate.now().minusDays(reservationExpirationInDays));
     }
 }

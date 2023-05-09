@@ -18,6 +18,6 @@ public interface BorrowingRepository extends JpaRepository<Borrowing, Long> {
             value = "DELETE FROM Borrowing b WHERE cast(b.status as text) = 'RESERVED' and b.reservation_date < ?1")
     @Modifying
     @Transactional
-    void deleteAllReservationDateIsBefore(LocalDate time);
+    void deleteAllReservationByDateIsBefore(LocalDate time);
 
 }
