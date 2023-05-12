@@ -78,4 +78,7 @@ public class Book {
     @OneToMany(mappedBy = "book")
     private List<Borrowing> borrowings;
 
+    public Book(Long id) {
+        this.id = id;
+    }
 }

@@ -2,7 +2,9 @@ package com.pnudev.librarysystem.service;
 
 import com.pnudev.librarysystem.dto.BorrowingDTO;
 import com.pnudev.librarysystem.dto.CreateBorrowingDTO;
+import com.pnudev.librarysystem.entity.Book;
 import com.pnudev.librarysystem.entity.Borrowing;
+import com.pnudev.librarysystem.entity.User;
 import com.pnudev.librarysystem.enums.BorrowingStatus;
 import com.pnudev.librarysystem.exception.OperationFailedException;
 import com.pnudev.librarysystem.mapper.BorrowingMapper;
@@ -41,8 +43,8 @@ public class BorrowingService {
         }
 
         Borrowing borrowing = Borrowing.builder()
-                .userId(userId)
-                .bookId(bookId)
+                .user(new User(userId))
+                .book(new Book(bookId))
                 .reservationDate(LocalDate.now())
                 .status(BorrowingStatus.RESERVED)
                 .build();
@@ -53,7 +55,7 @@ public class BorrowingService {
         Borrowing borrowing = borrowingRepository.findById(reservationId)
                 .orElseThrow(() -> new EntityNotFoundException("Borrowing with id: %d not found".formatted(reservationId)));
 
-        if (!borrowing.getUserId().equals(userDetailsImpl.getId())) {
+        if (!borrowing.getUser().getId().equals(userDetailsImpl.getId())) {
             throw new OperationFailedException("User does not have borrowing with id: %d".formatted(reservationId));
         }
 
