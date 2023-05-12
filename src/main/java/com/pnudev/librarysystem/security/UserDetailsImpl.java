@@ -2,6 +2,8 @@ package com.pnudev.librarysystem.security;
 
 import com.pnudev.librarysystem.enums.UserRole;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,6 +14,9 @@ import java.util.List;
 
 @AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
+
+    @Setter
+    @Getter
     private Long id;
     private String email;
     private String password;
@@ -50,10 +55,6 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public Long getId() {
-        return this.id;
     }
 
 }
