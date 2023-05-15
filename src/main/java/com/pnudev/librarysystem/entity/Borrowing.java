@@ -1,6 +1,7 @@
 package com.pnudev.librarysystem.entity;
 
 import com.pnudev.librarysystem.enums.BorrowingStatus;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -32,12 +33,18 @@ public class Borrowing {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
 
+    @Column(name = "user_id")
+    private Long userId;
+
     @ManyToOne
-    @JoinColumn(name = "book_id")
+    @JoinColumn(name = "book_id", insertable = false, updatable = false)
     private Book book;
+
+    @Column(name = "book_id")
+    private Long bookId;
 
     private LocalDate reservationDate;
     private LocalDate checkoutDate;

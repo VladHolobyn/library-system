@@ -56,8 +56,4 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Borrowing> borrowedBooks;
 
-    public User(Long id) {
-        this.id = id;
-    }
-
 }
