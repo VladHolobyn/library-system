@@ -2,7 +2,7 @@ package com.pnudev.librarysystem.service;
 
 import com.pnudev.librarysystem.dto.CategoryDTO;
 import com.pnudev.librarysystem.entity.Category;
-import com.pnudev.librarysystem.exception.DeleteFailedException;
+import com.pnudev.librarysystem.exception.OperationFailedException;
 import com.pnudev.librarysystem.mapper.CategoryMapper;
 import com.pnudev.librarysystem.repository.CategoryRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -41,7 +41,7 @@ public class CategoryService {
                 .orElseThrow(() -> new EntityNotFoundException("Category with id: %d not found".formatted(id)));
 
         if (!category.getBooks().isEmpty()) {
-            throw new DeleteFailedException("Category with id: %d is used".formatted(id));
+            throw new OperationFailedException("Category with id: %d is used".formatted(id));
         }
 
         categoryRepository.deleteById(id);
