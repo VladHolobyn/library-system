@@ -1,5 +1,6 @@
 package com.pnudev.librarysystem.service;
 
+import com.pnudev.librarysystem.dto.BookCheckoutDTO;
 import com.pnudev.librarysystem.dto.BorrowingDTO;
 import com.pnudev.librarysystem.dto.CreateBorrowingDTO;
 import com.pnudev.librarysystem.entity.Borrowing;
@@ -8,9 +9,14 @@ import com.pnudev.librarysystem.exception.OperationFailedException;
 import com.pnudev.librarysystem.mapper.BorrowingMapper;
 import com.pnudev.librarysystem.repository.BorrowingRepository;
 import com.pnudev.librarysystem.security.UserDetailsImpl;
+import com.pnudev.librarysystem.specification.BorrowingSpecificationBuilder;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,10 +25,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class BorrowingService {
+    private static final String BORROWING_NOT_FOUND_MSG_FORMAT = "Borrowing with id: %d not found";
+
     private final UserService userService;
     private final BookService bookService;
     private final BorrowingRepository borrowingRepository;
     private final BorrowingMapper borrowingMapper;
+    private final BorrowingSpecificationBuilder borrowingSpecificationBuilder;
 
     @Value("${application.reservation.expiration-in-days}")
     private int reservationExpirationInDays;
@@ -51,7 +60,7 @@ public class BorrowingService {
 
     public void cancelReservation(UserDetailsImpl userDetailsImpl, Long reservationId) {
         Borrowing borrowing = borrowingRepository.findById(reservationId)
-                .orElseThrow(() -> new EntityNotFoundException("Borrowing with id: %d not found".formatted(reservationId)));
+                .orElseThrow(() -> new EntityNotFoundException(BORROWING_NOT_FOUND_MSG_FORMAT.formatted(reservationId)));
 
         if (!borrowing.getUserId().equals(userDetailsImpl.getId())) {
             throw new OperationFailedException("User does not have borrowing with id: %d".formatted(reservationId));
@@ -72,4 +81,21 @@ public class BorrowingService {
     public void cleanUpExpiredReservation() {
         borrowingRepository.deleteAllByStatusAndReservationDateIsBefore(BorrowingStatus.RESERVED, LocalDate.now().minusDays(reservationExpirationInDays));
     }
+
+
+
+    public void renewBook(Long borrowingId) {
+        Borrowing borrowing = borrowingRepository.findById(borrowingId)
+                .orElseThrow(() -> new EntityNotFoundException(BORROWING_NOT_FOUND_MSG_FORMAT.formatted(borrowingId)));
+
+        if (!borrowing.getStatus().equals(BorrowingStatus.BORROWED)) {
+            throw new OperationFailedException("Borrowing must have BORROWED status");
+        }
+
+        borrowing.setStatus(BorrowingStatus.RETURNED);
+        borrowing.setReturnDate(LocalDate.now());
+        borrowingRepository.save(borrowing);
+    }
+
+
 }
