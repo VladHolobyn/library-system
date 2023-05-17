@@ -66,5 +66,15 @@ public class BorrowingController {
         borrowingService.checkoutBook(id, bookCheckoutDTO);
     }
 
-
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping
+    public Page<BorrowingDTO> searchBorrowing(
+            @RequestParam(value = "id", required = false) String id,
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "lastName", required = false) String lastName,
+            @PageableDefault Pageable pageable
+    ) {
+        return borrowingService.searchBorrowing(id, status, title, lastName, pageable);
+    }
 }

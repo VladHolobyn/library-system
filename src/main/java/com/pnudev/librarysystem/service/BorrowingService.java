@@ -113,5 +113,28 @@ public class BorrowingService {
         borrowingRepository.save(borrowing);
     }
 
+    public Page<BorrowingDTO> searchBorrowing(String id, String status, String title, String lastName, Pageable pageable) {
+        Specification<Borrowing> specification = Specification.where(null);
 
+        if (StringUtils.isNotEmpty(id)) {
+            specification = specification
+                    .and(borrowingSpecificationBuilder.fieldContainsIgnoreCase("id", id));
+        }
+        if (StringUtils.isNotEmpty(status)) {
+            specification = specification
+                    .and(borrowingSpecificationBuilder.fieldContainsIgnoreCase("status", status));
+        }
+        if (StringUtils.isNotEmpty(title)) {
+            specification = specification
+                    .and(borrowingSpecificationBuilder.joinTableFieldContainsIgnoreCase("book", "title", title));
+        }
+        if (StringUtils.isNotEmpty(lastName)) {
+            specification = specification
+                    .and(borrowingSpecificationBuilder.joinTableFieldContainsIgnoreCase("user", "lastName", lastName));
+        }
+
+
+        Page<Borrowing> page = borrowingRepository.findAll(specification, pageable);
+        return page.map(borrowingMapper::toDTO);
+    }
 }
