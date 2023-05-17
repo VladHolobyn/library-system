@@ -60,4 +60,11 @@ public class BorrowingController {
         borrowingService.renewBook(id);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/{id}/checkout")
+    public void checkoutBook(@PathVariable Long id, @RequestBody BookCheckoutDTO bookCheckoutDTO) {
+        borrowingService.checkoutBook(id, bookCheckoutDTO);
+    }
+
+
 }

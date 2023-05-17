@@ -82,7 +82,23 @@ public class BorrowingService {
         borrowingRepository.deleteAllByStatusAndReservationDateIsBefore(BorrowingStatus.RESERVED, LocalDate.now().minusDays(reservationExpirationInDays));
     }
 
+    public void checkoutBook(Long borrowingId, BookCheckoutDTO bookCheckoutDTO) {
+        Borrowing borrowing = borrowingRepository.findById(borrowingId)
+                .orElseThrow(() -> new EntityNotFoundException(BORROWING_NOT_FOUND_MSG_FORMAT.formatted(borrowingId)));
 
+        if (!borrowing.getStatus().equals(BorrowingStatus.RESERVED)) {
+            throw new OperationFailedException("Borrowing must have RESERVED status");
+        }
+        if (bookCheckoutDTO.getDueDate().isBefore(LocalDate.now().plusDays(1))) {
+            throw new OperationFailedException("Due date must be at least one day after checkout day");
+        }
+
+        borrowing.setStatus(BorrowingStatus.BORROWED);
+        borrowing.setCheckoutDate(LocalDate.now());
+        borrowing.setDueDate(bookCheckoutDTO.getDueDate());
+
+        borrowingRepository.save(borrowing);
+    }
 
     public void renewBook(Long borrowingId) {
         Borrowing borrowing = borrowingRepository.findById(borrowingId)
