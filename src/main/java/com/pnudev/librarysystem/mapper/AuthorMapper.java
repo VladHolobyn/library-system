@@ -14,8 +14,6 @@ public interface AuthorMapper {
 
     AuthorDTO toDTO(Author author);
 
-
-
     @Mapping(target = "id", ignore = true)
     void updateAuthorFromDTO(AuthorDTO authorDTO, @MappingTarget Author category);
 

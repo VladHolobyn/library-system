@@ -46,22 +46,21 @@ public class BookService {
     private final BookSpecificationBuilder bookSpecificationBuilder;
 
 
-    public Long createBook(RequestBookDTO requestBookDTO) {
+    public void createBook(RequestBookDTO requestBookDTO) {
         Book book = bookMapper.toEntity(requestBookDTO);
-        Book savedBook = bookRepository.save(book);
-        return savedBook.getId();
+        bookRepository.save(book);
     }
 
-    public BookDTO updateBook(Long id, RequestBookDTO requestBookDTO) {
+    public void updateBook(Long id, RequestBookDTO requestBookDTO) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND_MSG_FORMAT.formatted(id)));
 
         bookMapper.updateBookFromRequestDTO(requestBookDTO, book);
 
-        return bookMapper.toDTO(bookRepository.save(book));
+        bookRepository.save(book);
     }
 
-    public void deleteBookById(Long id) {
+    public void deleteBook(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND_MSG_FORMAT.formatted(id)));
 

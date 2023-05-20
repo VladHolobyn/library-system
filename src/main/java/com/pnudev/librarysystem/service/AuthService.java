@@ -4,20 +4,19 @@ import com.pnudev.librarysystem.dto.AuthenticationResponseDTO;
 import com.pnudev.librarysystem.dto.LoginUserDTO;
 import com.pnudev.librarysystem.enums.UserRole;
 import com.pnudev.librarysystem.security.UserDetailsImpl;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class AuthService {
 
-    private AuthenticationManager authenticationManager;
-    private JwtService jwtService;
-
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
     public AuthenticationResponseDTO login(LoginUserDTO loginUser) {
 

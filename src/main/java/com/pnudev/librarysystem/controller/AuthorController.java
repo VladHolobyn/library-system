@@ -31,24 +31,24 @@ public class AuthorController {
     @PreAuthorize("hasAnyAuthority('ADMIN', 'CLIENT')")
     @GetMapping
     public Page<AuthorDTO> searchAuthor(
-            @RequestParam(value = "firstname", required = false) String firstName,
-            @RequestParam(value = "lastname", required = false) String lastName,
+            @RequestParam(value = "firstName", required = false) String firstName,
+            @RequestParam(value = "lastName", required = false) String lastName,
             @PageableDefault Pageable pageable
     ) {
-        return authorService.searchAuthorByParams(firstName, lastName, pageable);
+        return authorService.searchAuthor(firstName, lastName, pageable);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AuthorDTO addAuthor(@Valid @RequestBody AuthorDTO authorDTO) {
-        return authorService.addAuthor(authorDTO);
+    public void createAuthor(@Valid @RequestBody AuthorDTO authorDTO) {
+        authorService.createAuthor(authorDTO);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{id}")
-    public AuthorDTO updateAuthor(@PathVariable Long id, @Valid @RequestBody AuthorDTO authorDTO) {
-        return authorService.updateAuthor(id, authorDTO);
+    public void updateAuthor(@PathVariable Long id, @Valid @RequestBody AuthorDTO authorDTO) {
+        authorService.updateAuthor(id, authorDTO);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")

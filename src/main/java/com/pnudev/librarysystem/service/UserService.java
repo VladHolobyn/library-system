@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class UserService implements UserDetailsService {
+    private static final String USER_NOT_FOUND_MSG_FORMAT = "User with id: %d not found";
 
     private final UserRepository userRepository;
     private final UserSpecificationBuilder userSpecificationBuilder;
@@ -67,23 +68,23 @@ public class UserService implements UserDetailsService {
         userRepository.save(admin);
     }
 
-    public UserDTO createUser(CreateUserDTO userDTO) {
+    public void createUser(CreateUserDTO userDTO) {
         if (userRepository.existsByEmail(userDTO.getEmail())) {
             throw new NotUniqueException("User with this email already exists");
         }
         User user = userMapper.toEntity(userDTO);
-        return userMapper.toDTO(userRepository.save(user));
+        userRepository.save(user);
     }
 
-    public UserDTO updateUser(Long id, UpdateUserDTO userDTO) {
+    public void updateUser(Long id, UpdateUserDTO userDTO) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User with id:%d not found".formatted(id)));
+                .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_MSG_FORMAT.formatted(id)));
 
         userMapper.updateUserFromDTO(userDTO, user);
-        return userMapper.toDTO(userRepository.save(user));
+        userRepository.save(user);
     }
 
-    public Page<UserDTO> searchBook(String lastName, String email, String phoneNumber, Pageable pageable) {
+    public Page<UserDTO> searchUser(String lastName, String email, String phoneNumber, Pageable pageable) {
         Specification<User> specification = Specification.where(null);
 
         if (StringUtils.isNotEmpty(lastName)) {
@@ -102,7 +103,7 @@ public class UserService implements UserDetailsService {
 
     public boolean canUserReserve(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User with id:%d not found".formatted(id)));
+                .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_MSG_FORMAT.formatted(id)));
         long reservationCount = user.getBorrowedBooks().stream().filter(borrowing -> borrowing.getStatus() == BorrowingStatus.RESERVED).count();
 
         return maxReservationCount - reservationCount > 0;

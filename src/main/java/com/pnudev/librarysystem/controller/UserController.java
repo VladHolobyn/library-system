@@ -25,30 +25,31 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/users")
 public class UserController {
+
     private final UserService userService;
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserDTO createUser(@Valid @RequestBody CreateUserDTO createUserDTO) {
-        return userService.createUser(createUserDTO);
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PutMapping("/{id}")
-    public UserDTO updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserDTO updateUserDTO) {
-        return userService.updateUser(id, updateUserDTO);
-    }
-
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'CLIENT')")
     @GetMapping
-    public Page<UserDTO> searchBook(
+    public Page<UserDTO> searchUser(
             @RequestParam(value = "lastName", required = false) String lastName,
             @RequestParam(value = "email", required = false) String email,
             @RequestParam(value = "phoneNumber", required = false) String phoneNumber,
             @PageableDefault Pageable pageable
     ) {
-        return userService.searchBook(lastName, email, phoneNumber, pageable);
+        return userService.searchUser(lastName, email, phoneNumber, pageable);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createUser(@Valid @RequestBody CreateUserDTO createUserDTO) {
+        userService.createUser(createUserDTO);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/{id}")
+    public void updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserDTO updateUserDTO) {
+        userService.updateUser(id, updateUserDTO);
     }
 
 }
