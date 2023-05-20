@@ -1,6 +1,6 @@
 package com.pnudev.librarysystem.controller;
 
-import com.pnudev.librarysystem.dto.AuthorDTO;
+import com.pnudev.librarysystem.dto.author.AuthorDTO;
 import com.pnudev.librarysystem.service.AuthorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

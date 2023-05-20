@@ -1,8 +1,8 @@
 package com.pnudev.librarysystem.service;
 
-import com.pnudev.librarysystem.dto.BookCheckoutDTO;
-import com.pnudev.librarysystem.dto.BorrowingDTO;
-import com.pnudev.librarysystem.dto.CreateBorrowingDTO;
+import com.pnudev.librarysystem.dto.borrowing.BorrowingCheckoutDTO;
+import com.pnudev.librarysystem.dto.borrowing.BorrowingDTO;
+import com.pnudev.librarysystem.dto.borrowing.CreateBorrowingDTO;
 import com.pnudev.librarysystem.entity.Borrowing;
 import com.pnudev.librarysystem.enums.BorrowingStatus;
 import com.pnudev.librarysystem.exception.OperationFailedException;
@@ -82,20 +82,20 @@ public class BorrowingService {
         borrowingRepository.deleteAllByStatusAndReservationDateIsBefore(BorrowingStatus.RESERVED, LocalDate.now().minusDays(reservationExpirationInDays));
     }
 
-    public void checkoutBook(Long borrowingId, BookCheckoutDTO bookCheckoutDTO) {
+    public void checkoutBook(Long borrowingId, BorrowingCheckoutDTO borrowingCheckoutDTO) {
         Borrowing borrowing = borrowingRepository.findById(borrowingId)
                 .orElseThrow(() -> new EntityNotFoundException(BORROWING_NOT_FOUND_MSG_FORMAT.formatted(borrowingId)));
 
         if (!borrowing.getStatus().equals(BorrowingStatus.RESERVED)) {
             throw new OperationFailedException("Borrowing must have RESERVED status");
         }
-        if (bookCheckoutDTO.getDueDate().isBefore(LocalDate.now().plusDays(1))) {
+        if (borrowingCheckoutDTO.getDueDate().isBefore(LocalDate.now().plusDays(1))) {
             throw new OperationFailedException("Due date must be at least one day after checkout day");
         }
 
         borrowing.setStatus(BorrowingStatus.BORROWED);
         borrowing.setCheckoutDate(LocalDate.now());
-        borrowing.setDueDate(bookCheckoutDTO.getDueDate());
+        borrowing.setDueDate(borrowingCheckoutDTO.getDueDate());
 
         borrowingRepository.save(borrowing);
     }

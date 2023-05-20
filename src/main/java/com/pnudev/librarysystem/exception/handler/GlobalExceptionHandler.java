@@ -1,6 +1,6 @@
 package com.pnudev.librarysystem.exception.handler;
 
-import com.pnudev.librarysystem.dto.ErrorDTO;
+import com.pnudev.librarysystem.dto.error.ErrorDTO;
 import com.pnudev.librarysystem.exception.OperationFailedException;
 import com.pnudev.librarysystem.exception.EmptyFileException;
 import com.pnudev.librarysystem.exception.FileWrongTypeException;

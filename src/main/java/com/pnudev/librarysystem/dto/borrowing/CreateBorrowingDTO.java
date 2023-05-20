@@ -1,4 +1,4 @@
-package com.pnudev.librarysystem.dto;
+package com.pnudev.librarysystem.dto.borrowing;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

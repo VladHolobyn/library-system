@@ -1,8 +1,8 @@
 package com.pnudev.librarysystem.mapper;
 
-import com.pnudev.librarysystem.dto.CreateUserDTO;
-import com.pnudev.librarysystem.dto.UpdateUserDTO;
-import com.pnudev.librarysystem.dto.UserDTO;
+import com.pnudev.librarysystem.dto.user.CreateUserDTO;
+import com.pnudev.librarysystem.dto.user.UpdateUserDTO;
+import com.pnudev.librarysystem.dto.user.UserDTO;
 import com.pnudev.librarysystem.security.UserDetailsImpl;
 import com.pnudev.librarysystem.entity.User;
 import org.mapstruct.Mapper;
@@ -20,6 +20,7 @@ public abstract class UserMapper {
 
     @Mapping(target = "password", expression = "java(passwordEncoder.encode(userDTO.getPassword()))")
     public abstract User toEntity(CreateUserDTO userDTO);
+
     public abstract UserDTO toDTO(User user);
 
     @Mapping(

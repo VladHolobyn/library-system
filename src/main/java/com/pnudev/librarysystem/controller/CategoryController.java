@@ -1,6 +1,6 @@
 package com.pnudev.librarysystem.controller;
 
-import com.pnudev.librarysystem.dto.CategoryDTO;
+import com.pnudev.librarysystem.dto.category.CategoryDTO;
 import com.pnudev.librarysystem.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

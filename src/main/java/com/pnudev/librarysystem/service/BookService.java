@@ -1,7 +1,7 @@
 package com.pnudev.librarysystem.service;
 
-import com.pnudev.librarysystem.dto.BookDTO;
-import com.pnudev.librarysystem.dto.RequestBookDTO;
+import com.pnudev.librarysystem.dto.book.BookDTO;
+import com.pnudev.librarysystem.dto.book.RequestBookDTO;
 import com.pnudev.librarysystem.entity.Book;
 import com.pnudev.librarysystem.enums.BorrowingStatus;
 import com.pnudev.librarysystem.exception.OperationFailedException;

@@ -1,7 +1,7 @@
 package com.pnudev.librarysystem.controller;
 
-import com.pnudev.librarysystem.dto.AuthenticationResponseDTO;
-import com.pnudev.librarysystem.dto.LoginUserDTO;
+import com.pnudev.librarysystem.dto.auth.AuthenticationResponseDTO;
+import com.pnudev.librarysystem.dto.auth.LoginDTO;
 import com.pnudev.librarysystem.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +17,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public AuthenticationResponseDTO login(@Valid @RequestBody LoginUserDTO loginUser) {
-        return authService.login(loginUser);
+    public AuthenticationResponseDTO login(@Valid @RequestBody LoginDTO loginDTO) {
+        return authService.login(loginDTO);
     }
 
 }

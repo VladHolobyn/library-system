@@ -1,8 +1,8 @@
 package com.pnudev.librarysystem.controller;
 
-import com.pnudev.librarysystem.dto.BookCheckoutDTO;
-import com.pnudev.librarysystem.dto.BorrowingDTO;
-import com.pnudev.librarysystem.dto.CreateBorrowingDTO;
+import com.pnudev.librarysystem.dto.borrowing.BorrowingCheckoutDTO;
+import com.pnudev.librarysystem.dto.borrowing.BorrowingDTO;
+import com.pnudev.librarysystem.dto.borrowing.CreateBorrowingDTO;
 import com.pnudev.librarysystem.security.UserDetailsImpl;
 import com.pnudev.librarysystem.service.BorrowingService;
 import jakarta.validation.Valid;
@@ -75,8 +75,8 @@ public class BorrowingController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/{id}/checkout")
-    public void checkoutBook(@PathVariable Long id, @RequestBody BookCheckoutDTO bookCheckoutDTO) {
-        borrowingService.checkoutBook(id, bookCheckoutDTO);
+    public void checkoutBook(@PathVariable Long id, @Valid @RequestBody BorrowingCheckoutDTO borrowingCheckoutDTO) {
+        borrowingService.checkoutBook(id, borrowingCheckoutDTO);
     }
 
 }

@@ -1,5 +1,7 @@
-package com.pnudev.librarysystem.dto;
+package com.pnudev.librarysystem.dto.book;
 
+import com.pnudev.librarysystem.dto.author.AuthorDTO;
+import com.pnudev.librarysystem.dto.category.CategoryDTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -7,12 +9,14 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class RequestBookDTO {
+public class BookDTO {
+    private Long id;
+
     @NotBlank(message = "Title must be specified")
     private String title;
 
-    @NotNull(message = "Cover image name must be specified")
-    private String coverImageName;
+    @NotBlank(message = "Cover image url must be specified")
+    private String coverImageUrl;
 
     @NotBlank(message = "Description must be specified")
     private String description;
@@ -23,9 +27,9 @@ public class RequestBookDTO {
     @NotNull(message = "Quantity must be specified")
     private Integer quantity;
 
-    @NotNull(message = "Author IDs must be specified")
-    private List<Long> authorIds;
+    @NotNull(message = "Authors must be specified")
+    private List<AuthorDTO> authors;
 
-    @NotNull(message = "Category IDs must be specified")
-    private List<Long> categoryIds;
+    @NotNull(message = "Categories must be specified")
+    private List<CategoryDTO> categories;
 }

@@ -1,8 +1,8 @@
 package com.pnudev.librarysystem.controller;
 
-import com.pnudev.librarysystem.dto.CreateUserDTO;
-import com.pnudev.librarysystem.dto.UpdateUserDTO;
-import com.pnudev.librarysystem.dto.UserDTO;
+import com.pnudev.librarysystem.dto.user.CreateUserDTO;
+import com.pnudev.librarysystem.dto.user.UpdateUserDTO;
+import com.pnudev.librarysystem.dto.user.UserDTO;
 import com.pnudev.librarysystem.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

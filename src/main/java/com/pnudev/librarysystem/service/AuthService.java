@@ -1,7 +1,7 @@
 package com.pnudev.librarysystem.service;
 
-import com.pnudev.librarysystem.dto.AuthenticationResponseDTO;
-import com.pnudev.librarysystem.dto.LoginUserDTO;
+import com.pnudev.librarysystem.dto.auth.AuthenticationResponseDTO;
+import com.pnudev.librarysystem.dto.auth.LoginDTO;
 import com.pnudev.librarysystem.enums.UserRole;
 import com.pnudev.librarysystem.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +18,10 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    public AuthenticationResponseDTO login(LoginUserDTO loginUser) {
+    public AuthenticationResponseDTO login(LoginDTO loginDTO) {
 
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginUser.getEmail(), loginUser.getPassword())
+                new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
         );
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();

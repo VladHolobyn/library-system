@@ -1,4 +1,4 @@
-package com.pnudev.librarysystem.dto;
+package com.pnudev.librarysystem.dto.user;
 
 import com.pnudev.librarysystem.enums.UserRole;
 import jakarta.validation.constraints.Email;

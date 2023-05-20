@@ -1,8 +1,8 @@
 package com.pnudev.librarysystem.service;
 
-import com.pnudev.librarysystem.dto.CreateUserDTO;
-import com.pnudev.librarysystem.dto.UpdateUserDTO;
-import com.pnudev.librarysystem.dto.UserDTO;
+import com.pnudev.librarysystem.dto.user.CreateUserDTO;
+import com.pnudev.librarysystem.dto.user.UpdateUserDTO;
+import com.pnudev.librarysystem.dto.user.UserDTO;
 import com.pnudev.librarysystem.entity.User;
 import com.pnudev.librarysystem.enums.BorrowingStatus;
 import com.pnudev.librarysystem.enums.UserRole;

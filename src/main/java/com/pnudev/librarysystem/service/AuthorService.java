@@ -1,6 +1,6 @@
 package com.pnudev.librarysystem.service;
 
-import com.pnudev.librarysystem.dto.AuthorDTO;
+import com.pnudev.librarysystem.dto.author.AuthorDTO;
 import com.pnudev.librarysystem.entity.Author;
 import com.pnudev.librarysystem.exception.OperationFailedException;
 import com.pnudev.librarysystem.mapper.AuthorMapper;

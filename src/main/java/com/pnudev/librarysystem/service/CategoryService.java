@@ -1,6 +1,6 @@
 package com.pnudev.librarysystem.service;
 
-import com.pnudev.librarysystem.dto.CategoryDTO;
+import com.pnudev.librarysystem.dto.category.CategoryDTO;
 import com.pnudev.librarysystem.entity.Category;
 import com.pnudev.librarysystem.exception.OperationFailedException;
 import com.pnudev.librarysystem.mapper.CategoryMapper;
