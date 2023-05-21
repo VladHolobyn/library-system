@@ -47,7 +47,6 @@ public class GlobalExceptionHandler {
         return new ErrorDTO(e.getMessage());
     }
 
-
     @ExceptionHandler(IOErrorInFileException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorDTO handleIOErrorInFileException(IOErrorInFileException e) {

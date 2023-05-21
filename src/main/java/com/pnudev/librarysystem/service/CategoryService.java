@@ -2,6 +2,7 @@ package com.pnudev.librarysystem.service;
 
 import com.pnudev.librarysystem.dto.category.CategoryDTO;
 import com.pnudev.librarysystem.entity.Category;
+import com.pnudev.librarysystem.exception.NotUniqueException;
 import com.pnudev.librarysystem.exception.OperationFailedException;
 import com.pnudev.librarysystem.mapper.CategoryMapper;
 import com.pnudev.librarysystem.repository.CategoryRepository;
@@ -23,6 +24,9 @@ public class CategoryService {
     }
 
     public void createCategory(CategoryDTO categoryDTO) {
+        if (categoryRepository.existsByNameIgnoreCase(categoryDTO.getName())){
+            throw new NotUniqueException("Category with such name already exists");
+        }
         Category category = categoryMapper.toEntity(categoryDTO);
         categoryRepository.save(category);
     }

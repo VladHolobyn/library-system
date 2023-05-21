@@ -32,4 +32,7 @@ public class BookDTO {
 
     @NotNull(message = "Categories must be specified")
     private List<CategoryDTO> categories;
+
+    @NotNull(message = "Available count must be specified")
+    private Long available;
 }

@@ -73,8 +73,8 @@ public class BorrowingService {
         borrowingRepository.delete(borrowing);
     }
 
-    public List<BorrowingDTO> findActiveUserBorrowings(UserDetailsImpl userDetailsImpl) {
-        List<Borrowing> borrowings = borrowingRepository.findAllByStatusIsNotAndUserId(BorrowingStatus.RETURNED, userDetailsImpl.getId());
+    public List<BorrowingDTO> findActiveUserBorrowings(Long id) {
+        List<Borrowing> borrowings = borrowingRepository.findAllByStatusIsNotAndUserId(BorrowingStatus.RETURNED, id);
         return borrowings.stream().map(borrowingMapper::toDTO).toList();
     }
 

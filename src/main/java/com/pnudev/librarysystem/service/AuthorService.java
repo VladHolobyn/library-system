@@ -47,7 +47,7 @@ public class AuthorService {
 
         authorMapper.updateAuthorFromDTO(authorDTO, author);
 
-        authorMapper.toDTO(authorRepository.save(author));
+        authorRepository.save(author);
     }
 
     public Page<AuthorDTO> searchAuthor(String firstName, String lastName, Pageable pageable) {

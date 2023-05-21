@@ -20,6 +20,10 @@ public interface BookMapper {
             target = "coverImageUrl",
             expression = "java(\"/books/%d/image\".formatted(book.getId()))"
     )
+    @Mapping(
+            target = "available",
+            expression = "java(book.getAvailableCount())"
+    )
     BookDTO toDTO(Book book);
 
     @InheritConfiguration

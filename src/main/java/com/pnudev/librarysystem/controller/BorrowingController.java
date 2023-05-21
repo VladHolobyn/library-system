@@ -46,7 +46,7 @@ public class BorrowingController {
     @PreAuthorize("hasAuthority('CLIENT')")
     @GetMapping("/my")
     public List<BorrowingDTO> findActiveUserBorrowings(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        return borrowingService.findActiveUserBorrowings(userDetailsImpl);
+        return borrowingService.findActiveUserBorrowings(userDetailsImpl.getId());
     }
 
     @PreAuthorize("hasAuthority('CLIENT')")
