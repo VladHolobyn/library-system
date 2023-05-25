@@ -1,6 +1,6 @@
 package com.pnudev.librarysystem.mapper;
 
-import com.pnudev.librarysystem.dto.CategoryDTO;
+import com.pnudev.librarysystem.dto.category.CategoryDTO;
 import com.pnudev.librarysystem.entity.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

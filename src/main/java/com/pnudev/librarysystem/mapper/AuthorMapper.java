@@ -1,6 +1,6 @@
 package com.pnudev.librarysystem.mapper;
 
-import com.pnudev.librarysystem.dto.AuthorDTO;
+import com.pnudev.librarysystem.dto.author.AuthorDTO;
 import com.pnudev.librarysystem.entity.Author;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,9 +14,7 @@ public interface AuthorMapper {
 
     AuthorDTO toDTO(Author author);
 
-
-
     @Mapping(target = "id", ignore = true)
-    void updateAuthorFromDTO(AuthorDTO authorDTO, @MappingTarget Author category);
+    void updateAuthorFromDTO(AuthorDTO authorDTO, @MappingTarget Author author);
 
 }

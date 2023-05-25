@@ -1,8 +1,8 @@
 package com.pnudev.librarysystem.controller;
 
-import com.pnudev.librarysystem.dto.BookCheckoutDTO;
-import com.pnudev.librarysystem.dto.BorrowingDTO;
-import com.pnudev.librarysystem.dto.CreateBorrowingDTO;
+import com.pnudev.librarysystem.dto.borrowing.BorrowingCheckoutDTO;
+import com.pnudev.librarysystem.dto.borrowing.BorrowingDTO;
+import com.pnudev.librarysystem.dto.borrowing.CreateBorrowingDTO;
 import com.pnudev.librarysystem.security.UserDetailsImpl;
 import com.pnudev.librarysystem.service.BorrowingService;
 import jakarta.validation.Valid;
@@ -28,7 +28,26 @@ import java.util.List;
 @RestController
 @RequestMapping("/borrowings")
 public class BorrowingController {
+
     private final BorrowingService borrowingService;
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping
+    public Page<BorrowingDTO> searchBorrowing(
+            @RequestParam(value = "id", required = false) String id,
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "lastName", required = false) String lastName,
+            @PageableDefault Pageable pageable
+    ) {
+        return borrowingService.searchBorrowing(id, status, title, lastName, pageable);
+    }
+
+    @PreAuthorize("hasAuthority('CLIENT')")
+    @GetMapping("/my")
+    public List<BorrowingDTO> findActiveUserBorrowings(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        return borrowingService.findActiveUserBorrowings(userDetailsImpl.getId());
+    }
 
     @PreAuthorize("hasAuthority('CLIENT')")
     @PostMapping
@@ -48,12 +67,6 @@ public class BorrowingController {
         borrowingService.cancelReservation(userDetailsImpl, id);
     }
 
-    @PreAuthorize("hasAuthority('CLIENT')")
-    @GetMapping("/my")
-    public List<BorrowingDTO> findActiveUserBorrowings(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        return borrowingService.findActiveUserBorrowings(userDetailsImpl);
-    }
-
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/{id}/renew")
     public void renewBook(@PathVariable Long id) {
@@ -62,19 +75,8 @@ public class BorrowingController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/{id}/checkout")
-    public void checkoutBook(@PathVariable Long id, @RequestBody BookCheckoutDTO bookCheckoutDTO) {
-        borrowingService.checkoutBook(id, bookCheckoutDTO);
+    public void checkoutBook(@PathVariable Long id, @Valid @RequestBody BorrowingCheckoutDTO borrowingCheckoutDTO) {
+        borrowingService.checkoutBook(id, borrowingCheckoutDTO);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping
-    public Page<BorrowingDTO> searchBorrowing(
-            @RequestParam(value = "id", required = false) String id,
-            @RequestParam(value = "status", required = false) String status,
-            @RequestParam(value = "title", required = false) String title,
-            @RequestParam(value = "lastName", required = false) String lastName,
-            @PageableDefault Pageable pageable
-    ) {
-        return borrowingService.searchBorrowing(id, status, title, lastName, pageable);
-    }
 }

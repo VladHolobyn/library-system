@@ -1,4 +1,4 @@
-package com.pnudev.librarysystem.dto;
+package com.pnudev.librarysystem.dto.author;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -7,9 +7,9 @@ import lombok.Data;
 public class AuthorDTO {
     private Long id;
 
-    @NotBlank(message = "Firstname must be specified")
+    @NotBlank(message = "First name must be specified")
     private String firstName;
 
-    @NotBlank(message = "Lastname must be specified")
+    @NotBlank(message = "Last name must be specified")
     private String lastName;
 }

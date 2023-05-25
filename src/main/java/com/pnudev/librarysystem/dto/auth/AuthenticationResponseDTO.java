@@ -1,4 +1,4 @@
-package com.pnudev.librarysystem.dto;
+package com.pnudev.librarysystem.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

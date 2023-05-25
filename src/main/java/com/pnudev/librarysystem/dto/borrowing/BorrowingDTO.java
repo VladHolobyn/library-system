@@ -1,5 +1,7 @@
-package com.pnudev.librarysystem.dto;
+package com.pnudev.librarysystem.dto.borrowing;
 
+import com.pnudev.librarysystem.dto.book.BookDTO;
+import com.pnudev.librarysystem.dto.user.UserDTO;
 import com.pnudev.librarysystem.enums.BorrowingStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

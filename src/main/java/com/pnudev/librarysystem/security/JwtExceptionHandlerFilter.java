@@ -1,7 +1,7 @@
 package com.pnudev.librarysystem.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pnudev.librarysystem.dto.ErrorDTO;
+import com.pnudev.librarysystem.dto.error.ErrorDTO;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;

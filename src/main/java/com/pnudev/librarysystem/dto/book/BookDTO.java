@@ -1,5 +1,7 @@
-package com.pnudev.librarysystem.dto;
+package com.pnudev.librarysystem.dto.book;
 
+import com.pnudev.librarysystem.dto.author.AuthorDTO;
+import com.pnudev.librarysystem.dto.category.CategoryDTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -30,4 +32,7 @@ public class BookDTO {
 
     @NotNull(message = "Categories must be specified")
     private List<CategoryDTO> categories;
+
+    @NotNull(message = "Available count must be specified")
+    private Long available;
 }

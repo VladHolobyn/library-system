@@ -1,6 +1,6 @@
 package com.pnudev.librarysystem.mapper;
 
-import com.pnudev.librarysystem.dto.BorrowingDTO;
+import com.pnudev.librarysystem.dto.borrowing.BorrowingDTO;
 import com.pnudev.librarysystem.entity.Borrowing;
 import org.mapstruct.Mapper;
 

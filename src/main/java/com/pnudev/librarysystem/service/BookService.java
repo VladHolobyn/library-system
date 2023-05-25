@@ -1,9 +1,8 @@
 package com.pnudev.librarysystem.service;
 
-import com.pnudev.librarysystem.dto.BookDTO;
-import com.pnudev.librarysystem.dto.RequestBookDTO;
+import com.pnudev.librarysystem.dto.book.BookDTO;
+import com.pnudev.librarysystem.dto.book.RequestBookDTO;
 import com.pnudev.librarysystem.entity.Book;
-import com.pnudev.librarysystem.enums.BorrowingStatus;
 import com.pnudev.librarysystem.exception.OperationFailedException;
 import com.pnudev.librarysystem.exception.EmptyFileException;
 import com.pnudev.librarysystem.exception.FileWrongTypeException;
@@ -46,22 +45,21 @@ public class BookService {
     private final BookSpecificationBuilder bookSpecificationBuilder;
 
 
-    public Long createBook(RequestBookDTO requestBookDTO) {
+    public void createBook(RequestBookDTO requestBookDTO) {
         Book book = bookMapper.toEntity(requestBookDTO);
-        Book savedBook = bookRepository.save(book);
-        return savedBook.getId();
+        bookRepository.save(book);
     }
 
-    public BookDTO updateBook(Long id, RequestBookDTO requestBookDTO) {
+    public void updateBook(Long id, RequestBookDTO requestBookDTO) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND_MSG_FORMAT.formatted(id)));
 
         bookMapper.updateBookFromRequestDTO(requestBookDTO, book);
 
-        return bookMapper.toDTO(bookRepository.save(book));
+        bookRepository.save(book);
     }
 
-    public void deleteBookById(Long id) {
+    public void deleteBook(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND_MSG_FORMAT.formatted(id)));
 
@@ -109,17 +107,8 @@ public class BookService {
             throw new FileWrongTypeException(imageTypes);
         }
 
-        Path uploadPath = Paths.get(uploadDir);
-        if (!Files.exists(uploadPath)) {
-            try {
-                Files.createDirectory(uploadPath);
-            } catch (IOException e) {
-                throw new IOErrorInFileException("Cannot create directory: " + e.getMessage());
-            }
-        }
-
         String filename = UUID.randomUUID() + "." + fileExtension;
-        Path imagePath = uploadPath.resolve(filename);
+        Path imagePath = Paths.get(uploadDir).resolve(filename);
 
         try {
             Files.copy(file.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
@@ -144,8 +133,6 @@ public class BookService {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND_MSG_FORMAT.formatted(bookId)));
 
-        long unavailableBooksCount = book.getBorrowings().stream().filter(borrowing -> borrowing.getStatus() != BorrowingStatus.RETURNED).count();
-
-        return book.getQuantity() - unavailableBooksCount > 0;
+        return book.getAvailableCount() > 0;
     }
 }

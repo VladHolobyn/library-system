@@ -1,10 +1,12 @@
 package com.pnudev.librarysystem.controller;
 
-import com.pnudev.librarysystem.dto.CategoryDTO;
+import com.pnudev.librarysystem.dto.category.CategoryDTO;
 import com.pnudev.librarysystem.service.CategoryService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,41 +20,34 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Optional;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
 
     private final CategoryService categoryService;
 
-
     @PreAuthorize("hasAnyAuthority('ADMIN', 'CLIENT')")
     @GetMapping
-    public Page<CategoryDTO> searchCategoryByName(
+    public Page<CategoryDTO> searchCategory(
             @RequestParam("name") String name,
-            @RequestParam("page") Optional<Integer> pageNumber,
-            @RequestParam("size") Optional<Integer> size
+            @PageableDefault Pageable pageable
     ) {
-        return categoryService.searchCategoryByName(
-                name,
-                pageNumber.filter(p -> p > 0).orElse(0),
-                size.filter(s -> s > 0).orElse(5)
-        );
+        return categoryService.searchCategory(name, pageable);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDTO addCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
-        return categoryService.addCategory(categoryDTO);
+    public void createCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
+        categoryService.createCategory(categoryDTO);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PutMapping
-    public CategoryDTO updateCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
-        return categoryService.updateCategory(categoryDTO);
+    @PutMapping("/{id}")
+    public void updateCategory(@PathVariable Long id, @Valid @RequestBody CategoryDTO categoryDTO) {
+        categoryService.updateCategory(id, categoryDTO);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")

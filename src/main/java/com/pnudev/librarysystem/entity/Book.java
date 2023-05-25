@@ -1,6 +1,7 @@
 package com.pnudev.librarysystem.entity;
 
 
+import com.pnudev.librarysystem.enums.BorrowingStatus;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -78,4 +79,9 @@ public class Book {
     @OneToMany(mappedBy = "book")
     private List<Borrowing> borrowings;
 
+    public long getAvailableCount() {
+        long unavailableBooksCount = this.getBorrowings().stream().filter(borrowing -> borrowing.getStatus() != BorrowingStatus.RETURNED).count();
+
+        return this.getQuantity() - unavailableBooksCount;
+    }
 }

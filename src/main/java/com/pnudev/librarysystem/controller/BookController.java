@@ -1,10 +1,10 @@
 package com.pnudev.librarysystem.controller;
 
-import com.pnudev.librarysystem.dto.BookDTO;
-import com.pnudev.librarysystem.dto.RequestBookDTO;
+import com.pnudev.librarysystem.dto.book.BookDTO;
+import com.pnudev.librarysystem.dto.book.RequestBookDTO;
 import com.pnudev.librarysystem.service.BookService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -24,18 +24,41 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RestController
-@RequestMapping("books")
+@RequestMapping("/books")
 public class BookController {
 
     private final BookService bookService;
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CLIENT')")
+    @GetMapping
+    public Page<BookDTO> searchBook(
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "authorLastName", required = false) String authorLastName,
+            @RequestParam(value = "category", required = false) String category,
+            @PageableDefault Pageable pageable
+    ) {
+        return bookService.searchBook(title, authorLastName, category, pageable);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CLIENT')")
+    @GetMapping("/{id}")
+    public BookDTO getBookById(@PathVariable Long id) {
+        return bookService.getBookById(id);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CLIENT')")
+    @GetMapping(value = "/{id}/image", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public byte[] getBookImage(@PathVariable Long id) {
+        return bookService.getBookImage(id);
+    }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Long createBook(@Valid @RequestBody RequestBookDTO requestBookDTO) {
-        return bookService.createBook(requestBookDTO);
+    public void createBook(@Valid @RequestBody RequestBookDTO requestBookDTO) {
+        bookService.createBook(requestBookDTO);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -45,40 +68,17 @@ public class BookController {
         return bookService.uploadCoverImage(file);
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'CLIENT')")
-    @GetMapping(value = "/{id}/image", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public byte[] getBookImage(@PathVariable Long id) {
-        return bookService.getBookImage(id);
-    }
-
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'CLIENT')")
-    @GetMapping
-    public Page<BookDTO> searchBook(
-            @RequestParam(value = "title", required = false) String title,
-            @RequestParam(value = "authorLastName", required = false) String authorLastname,
-            @RequestParam(value = "category", required = false) String categoryName,
-            @PageableDefault Pageable pageable
-    ) {
-        return bookService.searchBook(title, authorLastname, categoryName, pageable);
-    }
-
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'CLIENT')")
-    @GetMapping("/{id}")
-    public BookDTO getBookById(@PathVariable Long id) {
-        return bookService.getBookById(id);
-    }
-
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{id}")
-    public BookDTO updateBook(@PathVariable Long id, @Valid @RequestBody RequestBookDTO requestBookDTO) {
-        return bookService.updateBook(id, requestBookDTO);
+    public void updateBook(@PathVariable Long id, @Valid @RequestBody RequestBookDTO requestBookDTO) {
+        bookService.updateBook(id, requestBookDTO);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBook(@PathVariable Long id) {
-        bookService.deleteBookById(id);
+        bookService.deleteBook(id);
     }
 
 }
