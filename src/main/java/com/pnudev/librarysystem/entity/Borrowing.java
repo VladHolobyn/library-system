@@ -55,4 +55,12 @@ public class Borrowing {
     @Enumerated(EnumType.STRING)
     private BorrowingStatus status;
 
+    public boolean isOverdue() {
+        return switch (this.status) {
+            case RETURNED -> this.dueDate.isBefore(this.returnDate);
+            case BORROWED -> !LocalDate.now().isBefore(this.dueDate);
+            case RESERVED -> false;
+        };
+    }
+
 }

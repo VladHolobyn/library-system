@@ -21,7 +21,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 
 @Getter
@@ -83,5 +86,16 @@ public class Book {
         long unavailableBooksCount = this.getBorrowings().stream().filter(borrowing -> borrowing.getStatus() != BorrowingStatus.RETURNED).count();
 
         return this.getQuantity() - unavailableBooksCount;
+    }
+
+    public LocalDate predictBookAvailability() {
+        if (this.getAvailableCount() > 0) {
+            return LocalDate.now();
+        } else {
+            Optional<Borrowing> optional = this.getBorrowings().stream()
+                    .filter(borrowing -> borrowing.getStatus() == BorrowingStatus.BORROWED && !borrowing.isOverdue())
+                    .min(Comparator.comparing(Borrowing::getDueDate));
+            return optional.map(Borrowing::getDueDate).orElse(null);
+        }
     }
 }
