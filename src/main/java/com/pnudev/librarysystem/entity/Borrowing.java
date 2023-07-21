@@ -58,7 +58,7 @@ public class Borrowing {
     public boolean isOverdue() {
         return switch (this.status) {
             case RETURNED -> this.dueDate.isBefore(this.returnDate);
-            case BORROWED -> !LocalDate.now().isBefore(this.dueDate);
+            case BORROWED -> !LocalDate.now().isBefore(this.dueDate.plusDays(1));
             case RESERVED -> false;
         };
     }

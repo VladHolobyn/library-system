@@ -89,13 +89,19 @@ public class Book {
     }
 
     public LocalDate predictBookAvailability() {
-        if (this.getAvailableCount() > 0) {
+        List<Borrowing> activeBorrowings = this.getBorrowings()
+                .stream()
+                .filter(borrowing -> borrowing.getStatus() != BorrowingStatus.RETURNED)
+                .toList();
+
+        if (activeBorrowings.size() < this.quantity) {
             return LocalDate.now();
-        } else {
-            Optional<Borrowing> optional = this.getBorrowings().stream()
-                    .filter(borrowing -> borrowing.getStatus() == BorrowingStatus.BORROWED && !borrowing.isOverdue())
-                    .min(Comparator.comparing(Borrowing::getDueDate));
-            return optional.map(Borrowing::getDueDate).orElse(null);
         }
+
+        Optional<Borrowing> closestDueDateBorrowing = activeBorrowings
+                .stream()
+                .filter(borrowing -> borrowing.getStatus() == BorrowingStatus.BORROWED && !borrowing.isOverdue())
+                .min(Comparator.comparing(Borrowing::getDueDate));
+            return closestDueDateBorrowing.map(Borrowing::getDueDate).orElse(null);
     }
 }
