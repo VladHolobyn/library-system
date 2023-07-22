@@ -24,6 +24,10 @@ public interface BookMapper {
             target = "available",
             expression = "java(book.getAvailableCount())"
     )
+    @Mapping(
+            target = "availableAroundDate",
+            expression = "java(book.predictBookAvailability())"
+    )
     BookDTO toDTO(Book book);
 
     @InheritConfiguration

@@ -50,24 +50,22 @@ public class BookService {
         bookRepository.save(book);
     }
 
-    public void updateBook(Long id, RequestBookDTO requestBookDTO) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND_MSG_FORMAT.formatted(id)));
+    public void updateBook(Long bookId, RequestBookDTO requestBookDTO) {
+        Book book = this.getBookOrThrowException(bookId);
 
         bookMapper.updateBookFromRequestDTO(requestBookDTO, book);
 
         bookRepository.save(book);
     }
 
-    public void deleteBook(Long id) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND_MSG_FORMAT.formatted(id)));
+    public void deleteBook(Long bookId) {
+        Book book = this.getBookOrThrowException(bookId);
 
         if (!book.getBorrowings().isEmpty()) {
-            throw new OperationFailedException("Book with id: %d is used".formatted(id));
+            throw new OperationFailedException("Book with id: %d is used".formatted(bookId));
         }
 
-        bookRepository.deleteById(id);
+        bookRepository.deleteById(bookId);
     }
 
     public Page<BookDTO> searchBook(String title, String authorLastName, String categoryName, Pageable pageable) {
@@ -91,9 +89,8 @@ public class BookService {
         return page.map(bookMapper::toDTO);
     }
 
-    public BookDTO getBookById(Long id) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND_MSG_FORMAT.formatted(id)));
+    public BookDTO getBookById(Long bookId) {
+        Book book = this.getBookOrThrowException(bookId);
         return bookMapper.toDTO(book);
     }
 
@@ -120,8 +117,8 @@ public class BookService {
     }
 
     public byte[] getBookImage(Long bookId) {
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND_MSG_FORMAT.formatted(bookId)));
+        Book book = this.getBookOrThrowException(bookId);
+
         try {
             return Files.readAllBytes(Paths.get(uploadDir).resolve(book.getCoverImage()));
         } catch (IOException e) {
@@ -130,9 +127,12 @@ public class BookService {
     }
 
     public boolean isBookAvailable(Long bookId) {
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND_MSG_FORMAT.formatted(bookId)));
-
+        Book book = this.getBookOrThrowException(bookId);
         return book.getAvailableCount() > 0;
+    }
+
+    private Book getBookOrThrowException(Long bookId) {
+        return bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND_MSG_FORMAT.formatted(bookId)));
     }
 }
