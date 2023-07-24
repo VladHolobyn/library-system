@@ -32,6 +32,7 @@ public class BorrowingService {
     private final BorrowingRepository borrowingRepository;
     private final BorrowingMapper borrowingMapper;
     private final BorrowingSpecificationBuilder borrowingSpecificationBuilder;
+    private final BookAvailabilitySubscriptionService bookAvailabilitySubscriptionService;
 
     @Value("${application.reservation.expiration-in-days}")
     private int reservationExpirationInDays;
@@ -71,6 +72,7 @@ public class BorrowingService {
         }
 
         borrowingRepository.delete(borrowing);
+        bookAvailabilitySubscriptionService.notify(borrowing.getBookId());
     }
 
     public List<BorrowingDTO> findActiveUserBorrowings(Long id) {
@@ -79,7 +81,11 @@ public class BorrowingService {
     }
 
     public void cleanUpExpiredReservation() {
-        borrowingRepository.deleteAllByStatusAndReservationDateIsBefore(BorrowingStatus.RESERVED, LocalDate.now().minusDays(reservationExpirationInDays));
+        List<Borrowing> borrowings = borrowingRepository.deleteAllByStatusAndReservationDateIsBefore(BorrowingStatus.RESERVED, LocalDate.now().minusDays(reservationExpirationInDays));
+
+        borrowings.stream()
+                .distinct()
+                .forEach(borrowing -> bookAvailabilitySubscriptionService.notify(borrowing.getBookId()));
     }
 
     public void checkoutBook(Long borrowingId, BorrowingCheckoutDTO borrowingCheckoutDTO) {
@@ -111,6 +117,8 @@ public class BorrowingService {
         borrowing.setStatus(BorrowingStatus.RETURNED);
         borrowing.setReturnDate(LocalDate.now());
         borrowingRepository.save(borrowing);
+
+        bookAvailabilitySubscriptionService.notify(borrowing.getBookId());
     }
 
     public Page<BorrowingDTO> searchBorrowing(String id, String status, String title, String lastName, Pageable pageable) {

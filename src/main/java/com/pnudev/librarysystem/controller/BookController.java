@@ -2,6 +2,8 @@ package com.pnudev.librarysystem.controller;
 
 import com.pnudev.librarysystem.dto.book.BookDTO;
 import com.pnudev.librarysystem.dto.book.RequestBookDTO;
+import com.pnudev.librarysystem.security.UserDetailsImpl;
+import com.pnudev.librarysystem.service.BookAvailabilitySubscriptionService;
 import com.pnudev.librarysystem.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class BookController {
 
     private final BookService bookService;
+    private final BookAvailabilitySubscriptionService bookSubscriptionService;
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'CLIENT')")
     @GetMapping
@@ -81,4 +85,17 @@ public class BookController {
         bookService.deleteBook(id);
     }
 
+    @PreAuthorize("hasAuthority('CLIENT')")
+    @PostMapping("/{id}/subscribe")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void subscribeForBookAvailability(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl user) {
+        bookService.subscribeForBookAvailability(id, user);
+    }
+
+    @PreAuthorize("hasAuthority('CLIENT')")
+    @DeleteMapping("/{id}/unsubscribe")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void unsubscribeFromBookAvailability(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl user) {
+        bookSubscriptionService.unsubscribe(id, user.getId());
+    }
 }
