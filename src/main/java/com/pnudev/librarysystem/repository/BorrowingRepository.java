@@ -14,6 +14,6 @@ public interface BorrowingRepository extends JpaRepository<Borrowing, Long>, Jpa
     List<Borrowing> findAllByStatusIsNotAndUserId(BorrowingStatus status, Long id);
 
     @Transactional
-    void deleteAllByStatusAndReservationDateIsBefore(BorrowingStatus status, LocalDate time);
+    List<Borrowing> deleteAllByStatusAndReservationDateIsBefore(BorrowingStatus status, LocalDate time);
 
 }

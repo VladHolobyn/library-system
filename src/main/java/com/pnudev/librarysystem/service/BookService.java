@@ -9,6 +9,7 @@ import com.pnudev.librarysystem.exception.FileWrongTypeException;
 import com.pnudev.librarysystem.exception.IOErrorInFileException;
 import com.pnudev.librarysystem.mapper.BookMapper;
 import com.pnudev.librarysystem.repository.BookRepository;
+import com.pnudev.librarysystem.security.UserDetailsImpl;
 import com.pnudev.librarysystem.specification.BookSpecificationBuilder;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +44,7 @@ public class BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
     private final BookSpecificationBuilder bookSpecificationBuilder;
-
+    private final BookAvailabilitySubscriptionService bookAvailabilitySubscriptionService;
 
     public void createBook(RequestBookDTO requestBookDTO) {
         Book book = bookMapper.toEntity(requestBookDTO);
@@ -52,6 +53,10 @@ public class BookService {
 
     public void updateBook(Long bookId, RequestBookDTO requestBookDTO) {
         Book book = this.getBookOrThrowException(bookId);
+
+        if (book.getQuantity() < requestBookDTO.getQuantity()) {
+            bookAvailabilitySubscriptionService.notify(bookId);
+        }
 
         bookMapper.updateBookFromRequestDTO(requestBookDTO, book);
 
@@ -134,5 +139,14 @@ public class BookService {
     private Book getBookOrThrowException(Long bookId) {
         return bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND_MSG_FORMAT.formatted(bookId)));
+    }
+
+    public void subscribeForBookAvailability(Long bookId, UserDetailsImpl user) {
+
+        if (this.isBookAvailable(bookId)) {
+            throw new OperationFailedException("Book is available, this is pointless!");
+        }
+
+        bookAvailabilitySubscriptionService.subscribe(bookId, user.getId());
     }
 }
